@@ -16,7 +16,7 @@ function printAppInfoMarkdown(app) {
   const url = appUrl(app)
   const imgSrc = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/blob/main/screenshots/${app}.jpg?raw=true`
 
-  console.log(`| [<img src="${imgSrc}" width=${IMG_WIDTH}>](${url}) | <h3>${name}([Live Demo](${url}))</h3>${description} |`)
+  console.log(`| [<img src="${imgSrc}" width=${IMG_WIDTH}>](${url}) | <h3>${name} ([Live Demo](${url}))</h3>${description} |`)
 }
 
 console.log('| Live Demo | Description |')

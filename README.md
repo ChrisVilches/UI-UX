@@ -11,9 +11,10 @@ A repository that contains several applications made with the purpose of practic
 
 | Live Demo | Description |
 |--|--|
-| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/anim-3d.jpg?raw=true" width=250>](http://localhost:3000/anim-3d) | <h3>anim-3d([Live Demo](http://localhost:3000/anim-3d))</h3>Small app made with Three.js and React. |
-| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/hexagon.jpg?raw=true" width=250>](http://localhost:3000/hexagon) | <h3>hexagon([Live Demo](http://localhost:3000/hexagon))</h3>Responsive hexagonal grid design. |
-| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/signal.jpg?raw=true" width=250>](http://localhost:3000/signal) | <h3>signal([Live Demo](http://localhost:3000/signal))</h3>A React demo app to demonstrate the signals feature. |
+| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/anim-3d.jpg?raw=true" width=250>](http://localhost:3000/anim-3d) | <h3>anim-3d ([Live Demo](http://localhost:3000/anim-3d))</h3>Small app made with Three.js and React. |
+| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/hexagon.jpg?raw=true" width=250>](http://localhost:3000/hexagon) | <h3>hexagon ([Live Demo](http://localhost:3000/hexagon))</h3>Responsive hexagonal grid design. |
+| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/signal.jpg?raw=true" width=250>](http://localhost:3000/signal) | <h3>signal ([Live Demo](http://localhost:3000/signal))</h3>A React demo app to demonstrate the signals feature. |
+
 
 ## Deployment
 
