@@ -5,7 +5,8 @@
   "scripts": {
     "build-all": "node build-all",
     "build-all-force": "rm -rf dist_all && node build-all",
-    "gen-screenshots": "node gen-screenshots"
+    "gen-screenshots": "node gen-screenshots",
+    "gen-readme": "node gen-readme"
   },
   "author": "",
   "license": "ISC",
