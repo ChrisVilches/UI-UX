@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "A React demo app to demonstrate the signals feature.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

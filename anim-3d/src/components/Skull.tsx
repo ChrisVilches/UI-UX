@@ -22,11 +22,9 @@ const ROTATION_INIT = Object.freeze({
 
 export function Skull ({ verticalRotation, animationEnabled, ...props }: SkullProps): React.ReactElement {
   const materials: MTLLoader.MaterialCreator = useLoader(MTLLoader, skullMtl)
-
   const obj = useLoader(OBJLoader, skullObj, (loader: OBJLoader) => {
-    // TODO: Note, this doesn't support app path (e.g. if the app is deployed in a path other than /).
     const obj = Object.entries(materials.materialsInfo)[0][1]
-    obj.map_kd = `${window.location.origin}${skullJpg}`
+    obj.map_kd = (new URL(skullJpg, window.location.origin)).toString()
     materials.preload()
     loader.setMaterials(materials)
   })

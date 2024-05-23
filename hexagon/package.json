@@ -2,6 +2,7 @@
   "name": "hexagon",
   "private": true,
   "version": "0.0.0",
+  "description": "Responsive hexagonal grid design.",
   "type": "module",
   "scripts": {
     "dev": "vite",
