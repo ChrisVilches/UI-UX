@@ -1,5 +1,9 @@
 // TODO: A good improvement would be to make only the visible content (by using the scrolling data)
 //       to render, but this seems a bit difficult to implement.
+//       Try using react-window. I know the full width of the grid to be rendered, so that helps.
+
+// TODO: May want to change the name. Just say in the description the scroll is custom inspired by Ableton or video editing software.
+//       The name needs to be descriptive, and not many people know Ableton. Also, I already wrote "custom scroll" in the HTML title tag.
 
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
@@ -21,6 +25,7 @@ function randomSet(n: number): Set<number> {
 const gridData = Array(ROWS).fill(null).map(() => randomSet(COLS))
 
 // TODO: Randomize colors. Create color set, shuffle, then pick the first N items. (that way they are all different)
+// TODO: Use darker colors, or more beautiful colors.
 const dataColors = ['#ff0000', '#308782', '#F5DEB3', '#008b8b', '#01027b', '#95bedd', '#ec833f', '#ffd76a']
 
 function compressRanges(arr: number[]) {
@@ -38,6 +43,7 @@ function compressRanges(arr: number[]) {
 
 const compressedGridData = gridData.map(s => compressRanges([...s.values()]))
 
+const emptyCellColors = ['#c0c0c0', '#dadada']
 function Grid({ cellWidth }: { cellWidth: number }) {
   const defaultBorderColor = '#7a7a7a'
   return (
@@ -55,8 +61,9 @@ function Grid({ cellWidth }: { cellWidth: number }) {
                   backgroundColor: dataColors[rowIdx]
                 }}></div>
               ) : (
-                <div key={colIdx} className="border-[1px] bg-slate-400 h-10" style={{
+                <div key={colIdx} className="border-[1px] h-10" style={{
                   minWidth: cellWidth,
+                  backgroundColor: emptyCellColors[colIdx % 2],
                   borderColor: defaultBorderColor
                 }}></div>
               )
@@ -111,20 +118,28 @@ function App() {
     const contentWidth = contentRef.current!.scrollWidth
     const scrollToValue = (contentWidth - contentRef.current!.getBoundingClientRect().width) * scrollPercentage.current
     contentRef.current!.scrollLeft = scrollToValue
-    console.log(scrollPercentage.current)
+    // console.log(scrollPercentage.current)
   }, [])
 
   const resize = useCallback(() => {
+    const prevWidth = containerWidth || 800
     setContainerHeight(scrollContainerRef.current!.getBoundingClientRect().height)
     setContainerWidth(scrollContainerRef.current!.getBoundingClientRect().width)
 
     const scrollWidth = scrollRef.current!.getBoundingClientRect().width
-    const containerWidth = scrollContainerRef.current!.getBoundingClientRect().width
-    const previewCellWidth = containerWidth / COLS
+    const newContainerWidth = scrollContainerRef.current!.getBoundingClientRect().width
+    const previewCellWidth = newContainerWidth / COLS
+    
+    const newScrollPosition = (newContainerWidth - scrollWidth) * scrollPercentage.current
+    scrollRef.current!.style.left = `${newScrollPosition}px`
+    
+    const newScrollSize = scrollSize * newContainerWidth / prevWidth
 
-    setCellWidth(previewCellWidth * containerWidth / scrollWidth)
+    setScrollSize(newScrollSize)
+    setCellWidth(previewCellWidth * newContainerWidth / newScrollSize)
     scrollContent()
-  }, [scrollContent])
+    // TODO: Is this a cyclic dependency (because of containerWidth)
+  }, [containerWidth, scrollContent, scrollSize])
 
   useEffect(() => {
     const container = scrollContainerRef.current!
@@ -136,27 +151,36 @@ function App() {
     // TODO: Clean
     sizeObserver.observe(document.body)
 
+    const drag = () => {
+      if (!dragging.current) return
+
+      const offset = container.getBoundingClientRect().left
+      scroll.style.left = `${mousePos.current.x - offset - dragOffset.current}px`
+
+      if (scroll.getBoundingClientRect().right > container.getBoundingClientRect().right) {
+        const containerWidth = container.getBoundingClientRect().width
+        const scrollWidth = scroll.getBoundingClientRect().width
+        scroll.style.left = `${containerWidth - scrollWidth}px`
+      }
+
+      if (scroll.getBoundingClientRect().left < container.getBoundingClientRect().left) {
+        scroll.style.left = "0px"
+      }
+
+      scrollPercentage.current = (scroll.getBoundingClientRect().left - offset) / (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width)
+      scrollContent()
+    }
+
     document.addEventListener('mousemove', (e) => {
       mousePos.current.x = e.clientX
       mousePos.current.y = e.clientY
+      drag()
+    })
 
-      if (dragging.current) {
-        const offset = container.getBoundingClientRect().left
-        scroll.style.left = `${mousePos.current.x - offset - dragOffset.current}px`
-
-        if (scroll.getBoundingClientRect().right > container.getBoundingClientRect().right) {
-          const containerWidth = container.getBoundingClientRect().width
-          const scrollWidth = scroll.getBoundingClientRect().width
-          scroll.style.left = `${containerWidth - scrollWidth}px`
-        }
-
-        if (scroll.getBoundingClientRect().left < container.getBoundingClientRect().left) {
-          scroll.style.left = "0px"
-        }
-
-        scrollPercentage.current = (scroll.getBoundingClientRect().left - offset) / (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width)
-        scrollContent()
-      }
+    document.addEventListener('touchmove', (e) => {
+      mousePos.current.x = e.targetTouches[0].clientX
+      mousePos.current.y = e.targetTouches[0].clientY
+      drag()
     })
 
     // TODO: Almost works, but if the mouseup is outside the div, the event is not executed.
@@ -165,9 +189,19 @@ function App() {
       dragOffset.current = e.offsetX
     })
 
+    scroll.addEventListener('touchstart', function(e) {
+      dragging.current = true
+      dragOffset.current = e.targetTouches[0].pageX - scroll.getBoundingClientRect().left;
+    })
+
     document.addEventListener('mouseup', function() {
       dragging.current = false
     })
+
+    document.addEventListener('touchend', function() {
+      dragging.current = false
+    })
+
   }, [resize, scrollContent])
 
   // TODO: Improve these functions.
@@ -195,7 +229,6 @@ function App() {
       <div className="overflow-x-hidden select-none mt-4" ref={contentRef}>
         <Grid cellWidth={cellWidth}/>
       </div>
-
 
       <div className="flex flex-row space-x-2 mt-4">
         <button className="bg-green-800" onClick={zoomOut}>-</button>
