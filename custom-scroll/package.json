@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "Custom scrollbar inspired by audio/video editing software (specifically Ableton), as well as VSCode. Content is a grid (tabular data).",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
