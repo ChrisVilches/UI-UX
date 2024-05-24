@@ -3,15 +3,23 @@
   "version": "1.0.0",
   "description": "A repository that contains several applications made with the purpose of improving my frontend skills.",
   "scripts": {
-    "build-all": "node build-all",
-    "build-all-force": "rm -rf dist_all && node build-all",
+    "build": "node build-all",
+    "build-force": "rm -rf dist && node build-all",
     "gen-screenshots": "node gen-screenshots",
-    "gen-readme": "node gen-readme"
+    "gen-readme": "node gen-readme",
+    "lint": "standard *.js --fix"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fs-extra": "^11.2.0",
-    "puppeteer": "^22.9.0"
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^22.9.0",
+    "standard": "^17.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChrisVilches/UI-UX"
   }
 }

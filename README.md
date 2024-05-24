@@ -17,14 +17,26 @@ A repository that contains several applications made with the purpose of practic
 
 ## Deployment
 
+First set environment variables:
+
+```sh
+export BASE_URL=http://localhost:3000/
+```
+
 Build all apps:
 
 ```sh
-BASE_URL=http://localhost:3000/ npm run build-all
+npm run build
 ```
 
-Take screenshots. First make sure apps are running in the specified base url.
+Take screenshots. First make sure apps are running in the specified base url:
 
 ```sh
-BASE_URL=http://localhost:3000/ npm run gen-screenshots
+npm run gen-screenshots
+```
+
+Generate readme:
+
+```sh
+npm run gen-readme
 ```
