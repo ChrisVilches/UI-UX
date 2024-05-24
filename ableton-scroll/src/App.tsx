@@ -1,8 +1,11 @@
+// TODO: A good improvement would be to make only the visible content (by using the scrolling data)
+//       to render, but this seems a bit difficult to implement.
+
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const COLS = Math.round(Math.random() * 50 + 50)
-const ROWS = 3
+const ROWS = 8
 
 function randomSet(n: number): Set<number> {
   const res = new Set<number>()
@@ -15,14 +18,10 @@ function randomSet(n: number): Set<number> {
 }
 // TODO: Make a button that randomizes the data, and also randomizes the N size.
 //       That way I can verify the data resizing works properly.
-const gridData = [
-  randomSet(COLS),
-  randomSet(COLS),
-  randomSet(COLS)
-]
+const gridData = Array(ROWS).fill(null).map(() => randomSet(COLS))
 
 // TODO: Randomize colors. Create color set, shuffle, then pick the first N items. (that way they are all different)
-const dataColors = ['#ff0000', '#308782', '#F5DEB3']
+const dataColors = ['#ff0000', '#308782', '#F5DEB3', '#008b8b', '#01027b', '#95bedd', '#ec833f', '#ffd76a']
 
 function compressRanges(arr: number[]) {
   const groups: number[][] = []
@@ -105,6 +104,8 @@ function App() {
   //       implement some logic so that the scroll never becomes bigger than the container.
   // TODO: Scroll should increase in size whenever the window also gets enlarged.
   // TODO: When the user clicks on the scrollbar, it should move to that position (maybe with animation?).
+  // TODO: Make it mobile friendly??? Maybe make a version with less data so that it's not difficult to navigate.
+  //       It's possible to check whether the user is using mobile or desktop.
 
   const scrollContent = useCallback(() => {
     const contentWidth = contentRef.current!.scrollWidth
@@ -191,9 +192,10 @@ function App() {
         </div>
       </div>
 
-      <div className="overflow-x-hidden select-none" ref={contentRef}>
+      <div className="overflow-x-hidden select-none mt-4" ref={contentRef}>
         <Grid cellWidth={cellWidth}/>
       </div>
+
 
       <div className="flex flex-row space-x-2 mt-4">
         <button className="bg-green-800" onClick={zoomOut}>-</button>
