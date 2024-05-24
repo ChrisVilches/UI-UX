@@ -99,7 +99,7 @@ function App() {
       <NonStickySection variant="red"/>
 
       <div className="bg-blue-800 my-10 p-20 sticky top-0">
-        Other sticky element
+        Sticky element
       </div>
 
       <NonStickySection variant="red"/>
