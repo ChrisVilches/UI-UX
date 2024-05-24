@@ -73,7 +73,7 @@ function App() {
           such that it hides what's behind it??? Maybe one way to fix this is to use
           colors as variables (using SCSS or something like that, but preferably something else) 
           Then I can just make the background the same as this hiding block. */}
-          <div className="min-h-12 opacity-30" style={{ backgroundColor: '#242424' }}></div>
+          <div className="min-h-12" style={{ backgroundColor: '#242424' }}></div>
         </div>
 
         <div>
