@@ -38,12 +38,14 @@ export function useScroll (): UseScrollReturn {
   const [containerWidth, setContainerWidth] = useState(0)
   const [containerHeight, setContainerHeight] = useState(0)
 
-  const [scrollSize, setScrollSizeState] = useState(DEFAULT_SCROLL_SIZE)
+  const [contentWidth, setContentWidth] = useState(0)
+  const scrollSizeRef = useRef(DEFAULT_SCROLL_SIZE)
 
-  const setScrollSize = (v: number): void => {
-    setScrollSizeState(v)
+  const setScrollSize = useCallback((v: number): void => {
+    scrollSizeRef.current = v
+    setContentWidth(containerWidth * containerWidth / v)
     scrollRef.current!.style.width = `${v}px`
-  }
+  }, [containerWidth])
 
   const scrollContent = (): void => {
     const contentWidth = contentRef.current!.scrollWidth
@@ -57,6 +59,7 @@ export function useScroll (): UseScrollReturn {
     if (container === null) return
     if (scroll === null) return
     const prevWidth = containerWidth
+    const scrollSize = scrollSizeRef.current
 
     setContainerHeight(container.getBoundingClientRect().height)
     setContainerWidth(container.getBoundingClientRect().width)
@@ -73,11 +76,12 @@ export function useScroll (): UseScrollReturn {
     scrollContent()
     // TODO: Is this a cyclic dependency (because of containerWidth)
     //       useEffect executes multiple times because this function is being created again and again thanks to the dependency.
-  }, [containerWidth, scrollSize])
+  }, [containerWidth, setScrollSize])
 
   // TODO: This is executed too many times when the scroll is resized. At least I'm cleaning the event listeners.
 
   useLayoutEffect(() => {
+    console.log('****************** Resize effect *********************')
     const sizeObserver = new ResizeObserver(resize)
     resize()
 
@@ -88,6 +92,7 @@ export function useScroll (): UseScrollReturn {
   }, [resize])
 
   useLayoutEffect(() => {
+    console.log('****************** Mouse events effect *********************')
     const container = scrollContainerRef.current
     const scroll = scrollRef.current
     const content = contentRef.current
@@ -146,7 +151,7 @@ export function useScroll (): UseScrollReturn {
       e.preventDefault()
       e.stopPropagation()
       scrollState.current.dragging = true
-      scrollState.current.scrollSizeBeforeDrag = scrollSize
+      scrollState.current.scrollSizeBeforeDrag = scrollSizeRef.current
       scrollState.current.dragOffset.x = e.offsetX
       scrollState.current.dragOffset.y = e.offsetY
     }
@@ -155,7 +160,7 @@ export function useScroll (): UseScrollReturn {
       e.preventDefault()
       e.stopPropagation()
       scrollState.current.dragging = true
-      scrollState.current.scrollSizeBeforeDrag = scrollSize
+      scrollState.current.scrollSizeBeforeDrag = scrollSizeRef.current
       scrollState.current.dragOffset.x = e.targetTouches[0].pageX - scroll.getBoundingClientRect().left
       scrollState.current.dragOffset.y = e.targetTouches[0].pageY - scroll.getBoundingClientRect().top
     }
@@ -186,11 +191,11 @@ export function useScroll (): UseScrollReturn {
       document.removeEventListener('touchend', stopDragging)
       content.removeEventListener('scroll', nativeScroll)
     }
-  }, [containerWidth, scrollSize])
+  }, [containerWidth, setScrollSize])
 
   // TODO: Is this correct???????? it has a containerWidth^2
   // TODO: I think the name has to be changed...
-  const contentWidth = containerWidth * containerWidth / scrollSize
+  // const contentWidth = containerWidth * containerWidth / scrollSize
 
   return {
     containerHeight,
