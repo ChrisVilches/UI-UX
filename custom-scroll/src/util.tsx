@@ -1,6 +1,5 @@
 export function compressRanges (arr: number[]): Array<[number, number]> {
   const sorted = [...arr]
-  console.log('Compressing some shit (TODO: this should execute less in the future after some revamps)')
   const groups: Array<[number, number]> = []
 
   sorted.sort((a: number, b: number) => a - b)

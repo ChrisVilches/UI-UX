@@ -12,6 +12,7 @@ interface GridPreviewProps {
 export function GridPreview ({ containerWidth, containerHeight, cols, rows, data }: GridPreviewProps): JSX.Element {
   const w = containerWidth / cols
   const h = containerHeight / rows
+
   const compressedGridData = useMemo(() => data.map(s => compressRanges([...s.values()])), [data])
   return (
     <svg className="w-full">
