@@ -128,8 +128,6 @@ export function useScroll (): UseScrollReturn {
     }
 
     const touchmove = (e: TouchEvent): void => {
-      e.preventDefault()
-      e.stopPropagation()
       state.mousePos.x = e.targetTouches[0].clientX
       state.mousePos.y = e.targetTouches[0].clientY
       horizontalDrag()
