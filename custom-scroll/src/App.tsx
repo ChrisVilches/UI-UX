@@ -92,8 +92,6 @@ function GridPreview({ containerWidth, containerHeight, cols, rows, data }: Grid
   const w = containerWidth / cols
   const h = containerHeight / rows
   const compressedGridData = useMemo(() => data.map(s => compressRanges([...s.values()])), [data])
-  console.log(compressedGridData)
-  console.log(cols, rows)
   return (
     <svg className="w-full">
       {Array(rows).fill(null).map((_, rowIdx) => (
@@ -139,7 +137,7 @@ function App() {
   // TODO: When the user clicks on the scrollbar, it should move to that position (maybe with animation?).
 
   const scrollContent = useCallback(() => {
-    console.log('Scrolling')
+    // console.log('Scrolling')
     const contentWidth = contentRef.current!.scrollWidth
     const scrollToValue = (contentWidth - contentRef.current!.getBoundingClientRect().width) * scrollPercentage.current
     contentRef.current!.scrollLeft = scrollToValue
@@ -147,7 +145,7 @@ function App() {
 
   const resize = useCallback(() => {
     const prevWidth = containerWidth
-    console.log('Resizing')
+    // console.log('Resizing')
     
     setContainerHeight(scrollContainerRef.current!.getBoundingClientRect().height)
     setContainerWidth(scrollContainerRef.current!.getBoundingClientRect().width)
@@ -171,7 +169,7 @@ function App() {
 
   // TODO: This is executed too many times when the scroll is resized. At least I'm cleaning the event listeners.
   useLayoutEffect(() => {
-    console.log('useEffect *****************')
+    // console.log('useEffect *****************')
     const container = scrollContainerRef.current!
     const scroll = scrollRef.current!
 
@@ -186,8 +184,8 @@ function App() {
       //       but it seems I need more variables to do that.
 
       const dy = (mousePos.current.y - scrollRef.current!.getBoundingClientRect().top) - dragOffset.current.y
-      const slope = 1
-      const newSize = slope * dy + scrollSizeBeforeDrag.current
+      const slope = 0.8
+      const newSize = slope * -dy + scrollSizeBeforeDrag.current
       const MIN_SCROLL_SIZE = 20
 
       setScrollSize(Math.max(MIN_SCROLL_SIZE, Math.min(newSize, containerWidth)))
@@ -238,7 +236,7 @@ function App() {
       dragging.current = true
       scrollSizeBeforeDrag.current = scrollSize
       dragOffset.current.x = e.targetTouches[0].pageX - scroll.getBoundingClientRect().left;
-      dragOffset.current.y = e.targetTouches[0].pageY - scroll.getBoundingClientRect().left;
+      dragOffset.current.y = e.targetTouches[0].pageY - scroll.getBoundingClientRect().top;
     }
 
     const stopDragging = () => { dragging.current = false }
@@ -263,8 +261,8 @@ function App() {
   }, [resize, scrollContent, containerWidth, scrollSize])
 
   return (
-    <div className="container mx-auto mt-8">
-      <div className="bg-slate-600 w-full h-20" ref={scrollContainerRef}>
+    <div className="container px-4 md:mx-auto mt-8">
+      <div className="bg-slate-600 w-full h-20 touch-none" ref={scrollContainerRef}>
         <div className="absolute h-20">
           <div className="bg-slate-800 hover:bg-slate-700 transition-colors duration-150 z-40 h-full relative opacity-85 select-none" style={{ width: scrollSize }} ref={scrollRef}></div>
         </div>
