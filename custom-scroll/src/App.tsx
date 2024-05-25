@@ -212,6 +212,8 @@ function App() {
     }
 
     const mousemove = (e: MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
       mousePos.current.x = e.clientX
       mousePos.current.y = e.clientY
       horizontalDrag()
@@ -219,6 +221,8 @@ function App() {
     }
 
     const touchmove = (e: TouchEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
       mousePos.current.x = e.targetTouches[0].clientX
       mousePos.current.y = e.targetTouches[0].clientY
       horizontalDrag()
@@ -226,6 +230,8 @@ function App() {
     }
 
     const mousedown = (e: MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
       dragging.current = true
       scrollSizeBeforeDrag.current = scrollSize
       dragOffset.current.x = e.offsetX
@@ -233,13 +239,19 @@ function App() {
     }
 
     const touchstart = (e: TouchEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
       dragging.current = true
       scrollSizeBeforeDrag.current = scrollSize
       dragOffset.current.x = e.targetTouches[0].pageX - scroll.getBoundingClientRect().left;
       dragOffset.current.y = e.targetTouches[0].pageY - scroll.getBoundingClientRect().top;
     }
 
-    const stopDragging = () => { dragging.current = false }
+    const stopDragging = (e: TouchEvent | MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      dragging.current = false
+    }
 
     document.addEventListener('mousemove', mousemove)
     document.addEventListener('touchmove', touchmove)
@@ -262,7 +274,7 @@ function App() {
 
   return (
     <div className="container px-4 md:mx-auto mt-8">
-      <div className="bg-slate-600 w-full h-20 touch-none" ref={scrollContainerRef}>
+      <div className="bg-slate-600 w-full h-20 touch-pan-x" ref={scrollContainerRef}>
         <div className="absolute h-20">
           <div className="bg-slate-800 hover:bg-slate-700 transition-colors duration-150 z-40 h-full relative opacity-85 select-none" style={{ width: scrollSize }} ref={scrollRef}></div>
         </div>
