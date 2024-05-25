@@ -4,7 +4,7 @@ import { GridPreview } from './grid-preview'
 import { useGenerateGridData } from './hooks/use-generate-grid-data'
 import { useScroll } from './hooks/use-scroll'
 
-function App() {
+function App () {
   const { contentWidth, contentRef, scrollContainerRef, scrollRef, containerWidth, containerHeight } = useScroll()
 
   const { rows, cols, generate, gridData } = useGenerateGridData()
@@ -29,10 +29,6 @@ function App() {
 
       <div className="mt-8">
         <button className="p-4 bg-green-800 rounded-md" onClick={generate}>Randomize</button>
-      </div>
-
-      <div onClick={() => { console.log(4) }}>
-        haha
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
-import { useMemo } from "react"
-import { getColor } from "./util"
+import { useMemo } from 'react'
+import { getColor } from './util'
 
 const emptyCellColors = ['#323232', '#464646']
 
@@ -19,7 +19,7 @@ interface GridRowCellProps {
 
 const DEFAULT_BORDER_COLOR = '#2f2f2f'
 
-function GridRowCell({ cellWidth, colIdx, data, dataColor }: GridRowCellProps) {
+function GridRowCell ({ cellWidth, colIdx, data, dataColor }: GridRowCellProps) {
   const baseStyle = useMemo(() => ({
     backgroundColor: emptyCellColors[Math.floor(colIdx / 4) % 2],
     borderLeftColor: DEFAULT_BORDER_COLOR,
@@ -42,22 +42,22 @@ function GridRowCell({ cellWidth, colIdx, data, dataColor }: GridRowCellProps) {
   return <div className="border-[1px] h-10 border-y-0" style={finalStyle}></div>
 }
 
-export function Grid({ contentWidth, rows, cols, data }: GridProps) {
+export function Grid ({ contentWidth, rows, cols, data }: GridProps) {
   return (
     <>
-        {Array.from({ length: rows }, (_, rowIdx) => (
-          <div key={rowIdx} className="flex flex-cols border-gray-800 border-[1px]">
-            {Array.from({ length: cols }, (_, colIdx) => (
-              <GridRowCell
+      {Array.from({ length: rows }, (_, rowIdx) => (
+        <div key={rowIdx} className="flex flex-cols border-gray-800 border-[1px]">
+          {Array.from({ length: cols }, (_, colIdx) => (
+            <GridRowCell
                 key={colIdx}
                 colIdx={colIdx}
                 data={data[rowIdx]}
                 cellWidth={contentWidth / cols}
                 dataColor={getColor(rowIdx)}
               />
-            ))}
-          </div>
-        ))}
+          ))}
+        </div>
+      ))}
     </>
   )
 }

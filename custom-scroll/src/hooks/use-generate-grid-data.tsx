@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react"
-import { randomSet } from "../util"
+import { useCallback, useEffect, useState } from 'react'
+import { randomSet } from '../util'
 
-export function useGenerateGridData() {
+export function useGenerateGridData () {
   const [rows, setRows] = useState(0)
   const [cols, setCols] = useState(0)
   const [gridData, setGridData] = useState<Array<Set<number>>>([])
