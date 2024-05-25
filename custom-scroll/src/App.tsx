@@ -1,4 +1,3 @@
-import './App.css'
 import { Grid } from './grid'
 import { GridPreview } from './grid-preview'
 import { useGenerateGridData } from './hooks/use-generate-grid-data'
