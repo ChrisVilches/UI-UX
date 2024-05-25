@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { randomSet } from '../util'
 
-export function useGenerateGridData () {
+interface UseGenerateGridDataReturn {
+  rows: number
+  cols: number
+  gridData: Array<Set<number>>
+  generate: () => void
+}
+
+export function useGenerateGridData (): UseGenerateGridDataReturn {
   const [rows, setRows] = useState(0)
   const [cols, setCols] = useState(0)
   const [gridData, setGridData] = useState<Array<Set<number>>>([])

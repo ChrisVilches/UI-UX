@@ -4,7 +4,7 @@ import { GridPreview } from './grid-preview'
 import { useGenerateGridData } from './hooks/use-generate-grid-data'
 import { useScroll } from './hooks/use-scroll'
 
-function App () {
+function App (): JSX.Element {
   const { contentWidth, contentRef, scrollContainerRef, scrollRef, containerWidth, containerHeight } = useScroll()
 
   const { rows, cols, generate, gridData } = useGenerateGridData()

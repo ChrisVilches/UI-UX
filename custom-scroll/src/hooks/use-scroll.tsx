@@ -18,16 +18,25 @@ const SCROLL_INITIAL_STATE: ScrollState = {
   scrollSizeBeforeDrag: 0
 }
 
-export function useScroll () {
+interface UseScrollReturn {
+  contentWidth: number
+  containerHeight: number
+  containerWidth: number
+  scrollRef: MutableRefObject<HTMLDivElement | null>
+  scrollContainerRef: MutableRefObject<HTMLDivElement | null>
+  contentRef: MutableRefObject<HTMLDivElement | null>
+}
+
+export function useScroll (): UseScrollReturn {
   const scrollContainerRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
   const scrollRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
   const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
   const scrollState: MutableRefObject<ScrollState> = useRef(SCROLL_INITIAL_STATE)
 
   const state = scrollState.current
-  const container = scrollContainerRef.current!
-  const scroll = scrollRef.current!
-  const content = contentRef.current!
+  const container = scrollContainerRef.current as HTMLDivElement
+  const scroll = scrollRef.current as HTMLDivElement
+  const content = contentRef.current as HTMLDivElement
 
   const [containerWidth, setContainerWidth] = useState(0)
   const [containerHeight, setContainerHeight] = useState(0)
@@ -78,7 +87,7 @@ export function useScroll () {
 
     sizeObserver.observe(document.body)
 
-    const verticalDrag = () => {
+    const verticalDrag = (): void => {
       if (!state.dragging) return
 
       const dy = (state.mousePos.y - scroll.getBoundingClientRect().top) - state.dragOffset.y
@@ -89,7 +98,7 @@ export function useScroll () {
       setScrollSize(Math.max(MIN_SCROLL_SIZE, Math.min(newSize, containerWidth)))
     }
 
-    const horizontalDrag = () => {
+    const horizontalDrag = (): void => {
       if (!state.dragging) return
 
       const offset = container.getBoundingClientRect().left
@@ -109,7 +118,7 @@ export function useScroll () {
       scrollContent()
     }
 
-    const mousemove = (e: MouseEvent) => {
+    const mousemove = (e: MouseEvent): void => {
       e.preventDefault()
       e.stopPropagation()
       state.mousePos.x = e.clientX
@@ -118,7 +127,7 @@ export function useScroll () {
       verticalDrag()
     }
 
-    const touchmove = (e: TouchEvent) => {
+    const touchmove = (e: TouchEvent): void => {
       e.preventDefault()
       e.stopPropagation()
       state.mousePos.x = e.targetTouches[0].clientX
@@ -127,7 +136,7 @@ export function useScroll () {
       verticalDrag()
     }
 
-    const mousedown = (e: MouseEvent) => {
+    const mousedown = (e: MouseEvent): void => {
       e.preventDefault()
       e.stopPropagation()
       state.dragging = true
@@ -136,7 +145,7 @@ export function useScroll () {
       state.dragOffset.y = e.offsetY
     }
 
-    const touchstart = (e: TouchEvent) => {
+    const touchstart = (e: TouchEvent): void => {
       e.preventDefault()
       e.stopPropagation()
       state.dragging = true
@@ -145,12 +154,12 @@ export function useScroll () {
       state.dragOffset.y = e.targetTouches[0].pageY - scroll.getBoundingClientRect().top
     }
 
-    const stopDragging = () => {
+    const stopDragging = (): void => {
       state.dragging = false
     }
 
-    const nativeScroll = (e: Event) => {
-      const leftValue = (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width) * (e.target as HTMLDivElement).scrollLeft / (contentRef.current!.scrollWidth - contentRef.current!.getBoundingClientRect().width)
+    const nativeScroll = (e: Event): void => {
+      const leftValue = (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width) * (e.target as HTMLDivElement).scrollLeft / (content.scrollWidth - content.getBoundingClientRect().width)
       scroll.style.left = `${leftValue}px`
     }
 

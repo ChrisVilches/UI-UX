@@ -1,7 +1,7 @@
-export function compressRanges (arr: number[]) {
+export function compressRanges (arr: number[]): Array<[number, number]> {
   const sorted = [...arr]
   console.log('Compressing some shit (TODO: this should execute less in the future after some revamps)')
-  const groups: number[][] = []
+  const groups: Array<[number, number]> = []
 
   sorted.sort((a: number, b: number) => a - b)
   for (const x of sorted) {
@@ -28,6 +28,6 @@ export function randomSet (n: number): Set<number> {
 
 const DATA_COLORS: readonly string[] = ['#93A7FE', '#5BFFE8', '#F0FCB0', '#F9F47C', '#FF94A6', '#FDA575']
 
-export function getColor (idx: number) {
+export function getColor (idx: number): string {
   return DATA_COLORS[idx % DATA_COLORS.length]
 }

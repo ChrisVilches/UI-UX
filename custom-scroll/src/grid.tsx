@@ -19,7 +19,7 @@ interface GridRowCellProps {
 
 const DEFAULT_BORDER_COLOR = '#2f2f2f'
 
-function GridRowCell ({ cellWidth, colIdx, data, dataColor }: GridRowCellProps) {
+function GridRowCell ({ cellWidth, colIdx, data, dataColor }: GridRowCellProps): JSX.Element {
   const baseStyle = useMemo(() => ({
     backgroundColor: emptyCellColors[Math.floor(colIdx / 4) % 2],
     borderLeftColor: DEFAULT_BORDER_COLOR,
@@ -42,7 +42,7 @@ function GridRowCell ({ cellWidth, colIdx, data, dataColor }: GridRowCellProps) 
   return <div className="border-[1px] h-10 border-y-0" style={finalStyle}></div>
 }
 
-export function Grid ({ contentWidth, rows, cols, data }: GridProps) {
+export function Grid ({ contentWidth, rows, cols, data }: GridProps): JSX.Element {
   return (
     <>
       {Array.from({ length: rows }, (_, rowIdx) => (
