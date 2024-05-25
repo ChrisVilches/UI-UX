@@ -1,5 +1,7 @@
 # UI & UX Training
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3123f569-8b7b-44a0-b883-b7ae83a314da/deploy-status)](https://app.netlify.com/sites/chrisvilches-ui-ux/deploys)
+
 A repository that contains several applications made with the purpose of practicing the following:
 
 * UI/UX Design
