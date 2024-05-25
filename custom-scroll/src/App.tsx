@@ -247,9 +247,7 @@ function App() {
       dragOffset.current.y = e.targetTouches[0].pageY - scroll.getBoundingClientRect().top;
     }
 
-    const stopDragging = (e: TouchEvent | MouseEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
+    const stopDragging = () => {
       dragging.current = false
     }
 
