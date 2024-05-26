@@ -3,6 +3,7 @@
 import { type MutableRefObject, useCallback, useLayoutEffect, useRef, useState } from 'react'
 
 const DEFAULT_SCROLL_SIZE = 80
+const MIN_SCROLL_SIZE = 20
 
 interface ScrollState {
   mousePos: { x: number, y: number }
@@ -40,6 +41,18 @@ export function useScroll (): UseScrollReturn {
 
   const [contentWidth, setContentWidth] = useState(0)
   const scrollSizeRef = useRef(DEFAULT_SCROLL_SIZE)
+  const skipNativeScrollHandlerRef = useRef(false)
+
+  const setScrollX = (v: number): void => {
+    scrollRef.current!.style.left = `${v}px`
+  }
+
+  const scrollContent = (): void => {
+    const contentWidth = contentRef.current!.scrollWidth
+    const scrollToValue = (contentWidth - contentRef.current!.getBoundingClientRect().width) * scrollState.current.scrollPercentage
+    skipNativeScrollHandlerRef.current = true
+    contentRef.current!.scrollLeft = scrollToValue
+  }
 
   const setScrollSize = useCallback((v: number): void => {
     scrollSizeRef.current = v
@@ -47,38 +60,21 @@ export function useScroll (): UseScrollReturn {
     scrollRef.current!.style.width = `${v}px`
   }, [containerWidth])
 
-  const scrollContent = (): void => {
-    const contentWidth = contentRef.current!.scrollWidth
-    const scrollToValue = (contentWidth - contentRef.current!.getBoundingClientRect().width) * scrollState.current.scrollPercentage
-    contentRef.current!.scrollLeft = scrollToValue
-  }
-
   const resize = useCallback(() => {
-    const container = scrollContainerRef.current
-    const scroll = scrollRef.current
-    if (container === null) return
-    if (scroll === null) return
+    const container = scrollContainerRef.current!
     const prevWidth = containerWidth
     const scrollSize = scrollSizeRef.current
 
-    setContainerHeight(container.getBoundingClientRect().height)
-    setContainerWidth(container.getBoundingClientRect().width)
-    if (prevWidth === 0) return
+    const { width, height } = container.getBoundingClientRect()
+    setContainerHeight(height)
+    setContainerWidth(width)
 
-    const newContainerWidth = container.getBoundingClientRect().width
-
-    const newScrollPosition = (newContainerWidth - scrollSize) * scrollState.current.scrollPercentage
-    scroll.style.left = `${newScrollPosition}px`
-
-    const newScrollSize = scrollSize * newContainerWidth / prevWidth
-
-    setScrollSize(newScrollSize)
-    scrollContent()
-    // TODO: Is this a cyclic dependency (because of containerWidth)
-    //       useEffect executes multiple times because this function is being created again and again thanks to the dependency.
+    if (prevWidth !== 0) {
+      setScrollX((width - scrollSize) * scrollState.current.scrollPercentage)
+      setScrollSize(scrollSize * width / prevWidth)
+      scrollContent()
+    }
   }, [containerWidth, setScrollSize])
-
-  // TODO: This is executed too many times when the scroll is resized. At least I'm cleaning the event listeners.
 
   useLayoutEffect(() => {
     const sizeObserver = new ResizeObserver(resize)
@@ -91,44 +87,43 @@ export function useScroll (): UseScrollReturn {
   }, [resize])
 
   useLayoutEffect(() => {
-    const container = scrollContainerRef.current
-    const scroll = scrollRef.current
-    const content = contentRef.current
-    if (container === null) return
-    if (scroll === null) return
-    if (content === null) return
+    const container = scrollContainerRef.current!
+    const scroll = scrollRef.current!
+    const content = contentRef.current!
+
+    const postDrag = (): void => {
+      const offset = container.getBoundingClientRect().left
+      if (scroll.getBoundingClientRect().right > container.getBoundingClientRect().right) {
+        const containerWidth = container.getBoundingClientRect().width
+        const scrollWidth = scroll.getBoundingClientRect().width
+        setScrollX(containerWidth - scrollWidth)
+      }
+
+      if (scroll.getBoundingClientRect().left < container.getBoundingClientRect().left) {
+        setScrollX(0)
+      }
+
+      scrollState.current.scrollPercentage = (scroll.getBoundingClientRect().left - offset) / (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width)
+      scrollContent()
+    }
 
     const verticalDrag = (): void => {
+      // TODO: A bit glitchy
       if (!scrollState.current.dragging) return
 
       const dy = (scrollState.current.mousePos.y - scroll.getBoundingClientRect().top) - scrollState.current.dragOffset.y
       const slope = 0.8
       const newSize = slope * -dy + scrollState.current.scrollSizeBeforeDrag
-      const MIN_SCROLL_SIZE = 20
-
       setScrollSize(Math.max(MIN_SCROLL_SIZE, Math.min(newSize, containerWidth)))
-      // TODO: Is scrollContent not necessary here????? Is it because moving the mouse slightly horizontally would
-      //       trigger a scrollContent anyway???
+      postDrag()
     }
 
     const horizontalDrag = (): void => {
       if (!scrollState.current.dragging) return
 
       const offset = container.getBoundingClientRect().left
-      scroll.style.left = `${scrollState.current.mousePos.x - offset - scrollState.current.dragOffset.x}px`
-
-      if (scroll.getBoundingClientRect().right > container.getBoundingClientRect().right) {
-        const containerWidth = container.getBoundingClientRect().width
-        const scrollWidth = scroll.getBoundingClientRect().width
-        scroll.style.left = `${containerWidth - scrollWidth}px`
-      }
-
-      if (scroll.getBoundingClientRect().left < container.getBoundingClientRect().left) {
-        scroll.style.left = '0px'
-      }
-
-      scrollState.current.scrollPercentage = (scroll.getBoundingClientRect().left - offset) / (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width)
-      scrollContent()
+      setScrollX(scrollState.current.mousePos.x - offset - scrollState.current.dragOffset.x)
+      postDrag()
     }
 
     const mousemove = (e: MouseEvent): void => {
@@ -136,7 +131,9 @@ export function useScroll (): UseScrollReturn {
       e.stopPropagation()
       scrollState.current.mousePos.x = e.clientX
       scrollState.current.mousePos.y = e.clientY
-      horizontalDrag()
+      if (!e.ctrlKey) {
+        horizontalDrag()
+      }
       verticalDrag()
     }
 
@@ -170,8 +167,15 @@ export function useScroll (): UseScrollReturn {
     }
 
     const nativeScroll = (e: Event): void => {
-      const leftValue = (container.getBoundingClientRect().width - scroll.getBoundingClientRect().width) * (e.target as HTMLDivElement).scrollLeft / (contentRef.current!.scrollWidth - contentRef.current!.getBoundingClientRect().width)
-      scroll.style.left = `${leftValue}px`
+      if (skipNativeScrollHandlerRef.current) {
+        skipNativeScrollHandlerRef.current = false
+        return
+      }
+
+      const w = container.getBoundingClientRect().width
+      const scrollLength = w - scroll.getBoundingClientRect().width
+      const ratio = (e.target as HTMLDivElement).scrollLeft / (content.scrollWidth - w)
+      setScrollX(scrollLength * ratio)
     }
 
     const trackPressHandle = (e: MouseEvent): void => {
@@ -206,14 +210,10 @@ export function useScroll (): UseScrollReturn {
       document.removeEventListener('mouseup', stopDragging)
       document.removeEventListener('touchend', stopDragging)
       content.removeEventListener('scroll', nativeScroll)
-      container.removeEventListener('click', trackPressHandle)
+      container.removeEventListener('mousedown', trackPressHandle)
       container.removeEventListener('touchstart', trackTapHandle)
     }
   }, [containerWidth, setScrollSize])
-
-  // TODO: Is this correct???????? it has a containerWidth^2
-  // TODO: I think the name has to be changed...
-  // const contentWidth = containerWidth * containerWidth / scrollSize
 
   return {
     containerHeight,
