@@ -3,9 +3,6 @@ import { GridPreview } from './grid-preview'
 import { useGenerateGridData } from './hooks/use-generate-grid-data'
 import { useScroll } from './hooks/use-scroll'
 
-// TODO: (I think fixed) Infinite loop when resizing. I think the hooks are executing too many updates.
-// TODO: When the user clicks on the scrollbar, it should move to that position (maybe with animation?).
-
 export function ScrollContent (): JSX.Element {
   const { contentWidth, contentRef, scrollContainerRef, scrollRef, containerWidth, containerHeight } = useScroll()
 

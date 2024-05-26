@@ -81,7 +81,6 @@ export function useScroll (): UseScrollReturn {
   // TODO: This is executed too many times when the scroll is resized. At least I'm cleaning the event listeners.
 
   useLayoutEffect(() => {
-    console.log('****************** Resize effect *********************')
     const sizeObserver = new ResizeObserver(resize)
     resize()
 
@@ -92,7 +91,6 @@ export function useScroll (): UseScrollReturn {
   }, [resize])
 
   useLayoutEffect(() => {
-    console.log('****************** Mouse events effect *********************')
     const container = scrollContainerRef.current
     const scroll = scrollRef.current
     const content = contentRef.current
@@ -109,6 +107,8 @@ export function useScroll (): UseScrollReturn {
       const MIN_SCROLL_SIZE = 20
 
       setScrollSize(Math.max(MIN_SCROLL_SIZE, Math.min(newSize, containerWidth)))
+      // TODO: Is scrollContent not necessary here????? Is it because moving the mouse slightly horizontally would
+      //       trigger a scrollContent anyway???
     }
 
     const horizontalDrag = (): void => {
@@ -174,6 +174,20 @@ export function useScroll (): UseScrollReturn {
       scroll.style.left = `${leftValue}px`
     }
 
+    const trackPressHandle = (e: MouseEvent): void => {
+      mousedown(e)
+      scrollState.current.dragOffset.x = 0
+      horizontalDrag()
+    }
+
+    const trackTapHandle = (e: TouchEvent): void => {
+      touchstart(e)
+      scrollState.current.dragOffset.x = 0
+      scrollState.current.mousePos.x = e.targetTouches[0].clientX
+      scrollState.current.mousePos.y = e.targetTouches[0].clientY
+      horizontalDrag()
+    }
+
     document.addEventListener('mousemove', mousemove)
     document.addEventListener('touchmove', touchmove)
     scroll.addEventListener('mousedown', mousedown)
@@ -181,6 +195,8 @@ export function useScroll (): UseScrollReturn {
     document.addEventListener('mouseup', stopDragging)
     document.addEventListener('touchend', stopDragging)
     content.addEventListener('scroll', nativeScroll)
+    container.addEventListener('mousedown', trackPressHandle)
+    container.addEventListener('touchstart', trackTapHandle)
 
     return () => {
       document.removeEventListener('mousemove', mousemove)
@@ -190,6 +206,8 @@ export function useScroll (): UseScrollReturn {
       document.removeEventListener('mouseup', stopDragging)
       document.removeEventListener('touchend', stopDragging)
       content.removeEventListener('scroll', nativeScroll)
+      container.removeEventListener('click', trackPressHandle)
+      container.removeEventListener('touchstart', trackTapHandle)
     }
   }, [containerWidth, setScrollSize])
 

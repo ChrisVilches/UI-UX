@@ -14,7 +14,6 @@ export function useGenerateGridData (): UseGenerateGridDataReturn {
   const [gridData, setGridData] = useState<Array<Set<number>>>([])
 
   const generate = useCallback(() => {
-    console.log('******************** GENERATING ******************')
     const rows = Math.round((Math.random() * 5) + 5)
     const cols = Math.round(Math.random() * 50 + 50)
     setRows(rows)
