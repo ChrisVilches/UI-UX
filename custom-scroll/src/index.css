@@ -19,6 +19,9 @@
 
 body {
   min-height: 100vh;
+  @apply flex;
+  @apply items-center;
+  @apply justify-center;
 }
 
 /* Hide scrollbars, but keep functionality */

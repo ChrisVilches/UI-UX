@@ -12,7 +12,7 @@ export function ScrollContent (): JSX.Element {
   const { rows, cols, generate, gridData } = useGenerateGridData()
 
   return (
-    <div>
+    <>
       <div className="bg-slate-600 w-full h-20 touch-pan-x" ref={scrollContainerRef}>
         <div className="absolute h-20">
           <div
@@ -31,13 +31,15 @@ export function ScrollContent (): JSX.Element {
         </div>
       </div>
 
-      <div className="overflow-x-scroll select-none mt-4" ref={contentRef}>
-        <Grid contentWidth={contentWidth} rows={rows} cols={cols} data={gridData}/>
+      <div className="overflow-x-scroll" ref={contentRef}>
+        <div className="select-none mt-4 min-w-fit">
+          <Grid contentWidth={contentWidth} rows={rows} cols={cols} data={gridData}/>
+        </div>
       </div>
 
       <div className="mt-8">
         <button className="p-4 bg-green-800 rounded-md" onClick={generate}>Randomize</button>
       </div>
-    </div>
+    </>
   )
 }
