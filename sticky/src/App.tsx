@@ -3,10 +3,6 @@ import './App.css'
 import { ContentItem } from './content-item'
 import { NonStickySection } from './non-sticky-section'
 
-// TODO: Maybe try some new Tailwind technique?
-//       Like customizing themes or using Styled Components or some other
-//       way to mix it with React.
-
 const cardsConfig = Array(15).fill(null).map(() => Math.ceil(Math.random() * 15))
 const SIDEBAR_ELEMENTS = 15
 
@@ -68,12 +64,7 @@ function App() {
           <div className="bg-green-800 my-10 mb-0 p-20">
             Sticky section
           </div>
-          {/* TODO: Make have the height it'd have if it had content */}
-          {/* TODO: Is there an easy way to make it the same color as the background, but
-          such that it hides what's behind it??? Maybe one way to fix this is to use
-          colors as variables (using SCSS or something like that, but preferably something else) 
-          Then I can just make the background the same as this hiding block. */}
-          <div className="min-h-12" style={{ backgroundColor: '#242424' }}></div>
+          <div className="min-h-12 hide-content"></div>
         </div>
 
         <div>
@@ -88,7 +79,7 @@ function App() {
               </div>
             </div>
             <div>
-              {cardsConfig.map((elem, idx) => <ContentItem paragraphs={elem} key={idx}/>)}
+              {cardsConfig.map((elem, idx) => <ContentItem cardTitleclassName='top-56' paragraphs={elem} key={idx}/>)}
             </div>
           </div>
         </div>
