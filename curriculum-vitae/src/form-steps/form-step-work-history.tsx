@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { type WorkHistory } from '../models/work-history'
 import { load, save } from '../storage'
 import { WorkHistoryConfig } from '../components/work-history-config'
@@ -14,9 +14,7 @@ export function FormStepWorkHistory ({ onSuccess }: FormStepProps): JSX.Element 
     setWorkHistoryList(data.workHistory ?? [])
   }, [])
 
-  const onSubmit = (ev: FormEvent): void => {
-    ev.preventDefault()
-    ev.stopPropagation()
+  const onSubmit = (): void => {
     if (save({ workHistory: workHistoryList })) {
       onSuccess()
     }

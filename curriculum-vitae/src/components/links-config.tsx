@@ -93,8 +93,6 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
     }
   }
 
-  // TODO: Error text here is a bit tricky, it deforms the layout, and looks a bit cluttered.
-  //       How can I simplify it?
   return (
     <form onSubmit={onSubmitForm}>
       <div className="flex space-x-2">
@@ -153,10 +151,6 @@ export function LinksConfig ({ list, onChange }: LinksConfigProps): JSX.Element 
   }, [])
 
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
-
-  // TODO: Clicking on the main Submit button triggers the submit on the "link add form" xd
-  //       Now it won't show (I hid the message if the URL input is empty), but make
-  //       sure it's not getting triggered anyway
 
   return (
     <>

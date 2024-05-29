@@ -18,7 +18,7 @@ const schema = z.object({
 })
 
 export function FormStepSkillsLanguages ({ onSuccess }: FormStepProps): JSX.Element {
-  const { handleSubmit, setValue, control, formState: { errors, isValid } } = useForm<z.infer<typeof schema>>({
+  const { handleSubmit, setValue, control, formState: { isValid } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'all',
     defaultValues: {
@@ -47,22 +47,26 @@ export function FormStepSkillsLanguages ({ onSuccess }: FormStepProps): JSX.Elem
   //       I already implemented the validations for the single value combobox with React Hook Form.
 
   return (
-    <FormDelay immediate={!isValid} onSubmit={handleSubmit(onSubmit)}>
+    <FormDelay onSubmit={handleSubmit(onSubmit)}>
       {(isSubmitting) => (
         <>
+          isValid: {String(isValid)}. (For development) This only gets updated when the form has been touched!!
+          It should start from isValid if the content is already valid!
+          I think the reason why it happens is that 'handleSubmit' does a previous check, therefore
+          I should let it execute it, and then add a delay in the onSubmit function (my code)
           <div className="my-4">
-            <Controller control={control} name="skills" render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Controller control={control} name="skills" render={({ fieldState, field: { onChange, onBlur, value, ref } }) => (
               <>
                 <MultipleComboboxLevel selected={value} onChange={onChange} onBlur={onBlur} ref={ref} list={skills} defaultLevel={1} levels={['Beginner', 'Intermediate', 'Advanced']} placeholder="e.g. Excel" emptyMessage="Please fill in your skills"/>
-                {(errors.skills != null) && <span className="text-red-500">{errors.skills.message}</span>}
+                {fieldState.error != null && <span className="text-sm text-red-500">{fieldState.error.message}</span>}
               </>
             )}/>
           </div>
           <div className="my-10">
-            <Controller control={control} name="languages" render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Controller control={control} name="languages" render={({ fieldState, field: { onChange, onBlur, value, ref } }) => (
               <>
                 <MultipleComboboxLevel selected={value} onChange={onChange} onBlur={onBlur} ref={ref} list={languages} defaultLevel={2} levels={['Basic', 'Conversational', 'Business', 'Fluent', 'Native']} placeholder="e.g. English" emptyMessage="Please fill in the languages you speak"/>
-                {(errors.languages != null) && <span className="text-red-500">{errors.languages.message}</span>}
+                {fieldState.error != null && <span className="text-sm text-red-500">{fieldState.error.message}</span>}
               </>
             )}/>
           </div>

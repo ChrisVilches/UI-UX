@@ -1,6 +1,6 @@
 import { YearMonthPicker } from './year-month-picker'
 import { type WorkHistory } from '../models/work-history'
-import { useForm, useWatch } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { TextInput } from './text-input'
@@ -28,7 +28,7 @@ const schema = z.object({
 })
 
 export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFormProps): JSX.Element {
-  const { trigger, handleSubmit, setValue, register, control, formState: { errors } } = useForm<z.infer<typeof schema>>({
+  const { handleSubmit, register, control, formState: { errors } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'all',
     defaultValues: {
@@ -55,56 +55,48 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
 
   const isNew = typeof initialWorkHistory.id === 'undefined'
 
-  const dates = useWatch({
-    name: 'dates',
-    control
-  })
-
   return (
-    // TODO: It's possible to remove this trigger by creating a complex "value" in Zod,
-    //       and using that for the validation of one value fields. Then I can just use
-    //       <Controller> properly and manage the state. I may want to create another
-    //       component such as YearMonthPickerRange or something like that which has all the
-    //       state and returns the range value on every onChange execution.
     <form onSubmit={(ev) => {
+      // TODO: If I remove this, I'd be submitting the parent main form.
+      //       It should be possible to remove this and have it work properly.
+      //       i.e. just use <form onSubmit={handleSubmit(submitHandle)} ...>
       ev.preventDefault()
       ev.stopPropagation()
       handleSubmit(submitHandle)().catch(console.error)
-      trigger('dates').catch(console.error)
     }}>
       <div className="mb-10">
-        {/*
-        NOTE: React Hook Form updates individual fields (errors, values, etc), so if you want to
-              do validations that deal with several fields you should execute "trigger" on the group.
-        */}
-        <div className="flex space-x-2 mb-2">
-          <div className="flex-1">
-            <YearMonthPicker value={dates.startDate} onChange={(data) => {
-              setValue('dates.startDate', data)
-              trigger('dates').catch(console.error)
-            }}/>
-          </div>
-          <div className="flex-1">
-            <YearMonthPicker disabled={dates.stillWorking} value={dates.endDate} onChange={(data) => {
-              setValue('dates.endDate', data)
-              trigger('dates').catch(console.error)
-            }}/>
-          </div>
-        </div>
-        {errors.dates != null && <span className="text-sm text-red-500">{errors.dates.message}</span>}
+        <Controller control={control} name="dates" render={({ fieldState, field: { onBlur, onChange, value } }) => (
+          <>
+            <div className="flex space-x-2 mb-2">
+              <div className="flex-1">
+                <YearMonthPicker value={value.startDate} onChange={(data) => {
+                  onChange({ ...value, startDate: data })
+                }}/>
+              </div>
+              <div className="flex-1">
+                <YearMonthPicker disabled={value.stillWorking} value={value.endDate} onChange={(data) => {
+                  onChange({ ...value, endDate: data })
+                }}/>
+              </div>
+            </div>
+            {fieldState.error != null && <span className="text-sm text-red-500">{fieldState.error.message}</span>}
 
-        <div className="flex items-center justify-end mt-2">
-          <input
-            type="checkbox"
-            {...register('dates.stillWorking')}
-            onChange={(ev) => {
-              setValue('dates.stillWorking', ev.target.checked)
-              trigger('dates').catch(console.error)
-            }}
-            id="still-working"
-            className="group size-6 rounded-md bg-white/10 p-1 ring-1 ring-white/15 ring-inset data-[checked]:bg-white"/>
-          <label htmlFor="still-working" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I&apos;m still working here</label>
-        </div>
+            <div className="flex items-center justify-end mt-2">
+              <input
+                type="checkbox"
+                onBlur={onBlur}
+                checked={value.stillWorking}
+                onChange={(ev) => {
+                  // TODO: Note, the object keys are not typesafe. I can type "stillWorkkking" and
+                  //       it would work.
+                  onChange({ ...value, stillWorking: ev.target.checked })
+                }}
+                id="still-working"
+                className="group size-6 rounded-md bg-white/10 p-1 ring-1 ring-white/15 ring-inset data-[checked]:bg-white"/>
+              <label htmlFor="still-working" className="ms-2 text-sm font-medium text-gray-100">I&apos;m still working here</label>
+            </div>
+          </>
+        )}/>
       </div>
 
       <div className="mb-4">
