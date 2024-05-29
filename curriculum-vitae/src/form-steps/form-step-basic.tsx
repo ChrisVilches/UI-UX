@@ -21,7 +21,7 @@ const schema = z.object({
 
 export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
   const [gender, setGender] = useState<GenderValue>(genderValues[0])
-  const { register, handleSubmit, setValue, control, trigger, formState: { errors, isValid } } = useForm<z.infer<typeof schema>>({
+  const { register, handleSubmit, setValue, control, formState: { errors, isValid } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onTouched'
   })
@@ -40,7 +40,7 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
     // TODO: But why did I put it here if there aren't going to be any errors anyway?
     //       Probably not needed anymore? Remove.
     // trigger().catch(console.error)
-  }, [setValue, trigger])
+  }, [setValue])
 
   const onSubmit = (data: z.infer<typeof schema>): void => {
     if (save({ ...data, gender })) {

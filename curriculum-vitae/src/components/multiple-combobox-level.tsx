@@ -1,5 +1,5 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
-import React, { useMemo, useState } from 'react'
+import React, { type ForwardedRef, forwardRef, useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 import { IoTrashOutline } from 'react-icons/io5'
 import { Alert } from './alert'
@@ -52,9 +52,11 @@ interface MultipleComboboxLevelProps {
   defaultLevel: number
   selected: MultipleComboboxLevelItem[]
   onChange: (items: MultipleComboboxLevelItem[]) => void
+  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
 }
 
-export function MultipleComboboxLevel ({ selected, onChange, emptyMessage, placeholder, list, levels, defaultLevel }: MultipleComboboxLevelProps): JSX.Element {
+export const MultipleComboboxLevel = forwardRef((props: MultipleComboboxLevelProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
+  const { selected, onChange, emptyMessage, placeholder, onBlur, list, levels, defaultLevel } = props
   const [query, setQuery] = useState('')
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['name'], threshold: 0.3 }), [list])
@@ -66,7 +68,7 @@ export function MultipleComboboxLevel ({ selected, onChange, emptyMessage, place
     // This is to avoid showing already selected options.
     const selectedSet = new Set([...selected.map(s => s.name)])
 
-    const result = fuse.search(text).map(res => res.item) // list.filter(({ name }) => name.toLowerCase().includes(text))
+    const result = fuse.search(text).map(res => res.item)
       .filter(({ name }) => !selectedSet.has(name))
 
     // This is to add the free input at the end IF it's not in the suggestion list
@@ -124,7 +126,7 @@ export function MultipleComboboxLevel ({ selected, onChange, emptyMessage, place
 
       {selected.length === 0 && <Alert className="mb-10" variant="warn">{emptyMessage}</Alert>}
 
-      <ComboboxInput value={query} className="p-2" placeholder={placeholder} aria-label="Assignees" onChange={(event) => { setQuery(event.target.value) }} />
+      <ComboboxInput onBlur={onBlur} ref={ref} value={query} className="p-2" placeholder={placeholder} aria-label="Assignees" onChange={(event) => { setQuery(event.target.value) }} />
 
       <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] z-50">
         {getFiltered().map((item) => (
@@ -135,4 +137,6 @@ export function MultipleComboboxLevel ({ selected, onChange, emptyMessage, place
       </ComboboxOptions>
     </Combobox>
   )
-}
+})
+
+MultipleComboboxLevel.displayName = 'MultipleComboboxLevel'

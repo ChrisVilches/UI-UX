@@ -61,6 +61,11 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
   })
 
   return (
+    // TODO: It's possible to remove this trigger by creating a complex "value" in Zod,
+    //       and using that for the validation of one value fields. Then I can just use
+    //       <Controller> properly and manage the state. I may want to create another
+    //       component such as YearMonthPickerRange or something like that which has all the
+    //       state and returns the range value on every onChange execution.
     <form onSubmit={(ev) => {
       ev.preventDefault()
       ev.stopPropagation()
