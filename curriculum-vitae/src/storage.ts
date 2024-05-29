@@ -3,16 +3,15 @@ import { countrySchema } from './schemas/country'
 import { genderSchema } from './schemas/gender'
 import { dateSchema } from './schemas/date'
 import { itemWithLevelSchema } from './schemas/item-with-level'
+import { pick } from 'lodash'
 
 const LOCALSTORAGE_KEY = 'ui-ux-cv-data'
 
 const storageSchema = z.object({
-  basic: z.object({
-    fullName: z.string(),
-    email: z.string().email(),
-    gender: genderSchema,
-    nationality: countrySchema
-  }),
+  fullName: z.string(),
+  email: z.string().email(),
+  gender: genderSchema,
+  nationality: countrySchema,
   languages: z.array(itemWithLevelSchema),
   skills: z.array(itemWithLevelSchema),
   links: z.array(z.string()),
@@ -27,7 +26,25 @@ const storageSchema = z.object({
   }))
 })
 
-export const tryLoad = (): z.infer<typeof storageSchema> | null => {
+const storagePartialSchema = storageSchema.partial()
+type StoragePartial = z.infer<typeof storagePartialSchema>
+
+function pickOrNull<T = Record<string, unknown>> (obj: T, keys: Array<keyof T>): Partial<T> | null {
+  if (keys == null || keys.length === 0) return obj
+
+  const filtered = pick(obj, keys)
+  if (Object.keys(filtered).length > 0) {
+    return filtered
+  }
+
+  return null
+}
+
+interface LoadArgs {
+  select?: Array<keyof StoragePartial>
+}
+
+export function load ({ select = [] }: LoadArgs = {}): StoragePartial | null {
   try {
     const data = localStorage.getItem(LOCALSTORAGE_KEY)
 
@@ -36,9 +53,9 @@ export const tryLoad = (): z.infer<typeof storageSchema> | null => {
       return null
     }
 
-    const res = storageSchema.safeParse(JSON.parse(data))
+    const res = storagePartialSchema.safeParse(JSON.parse(data))
     if (res.success) {
-      return res.data
+      return pickOrNull(res.data, select)
     } else {
       console.error("Couldn't load data from storage")
       console.error(res)
@@ -51,19 +68,10 @@ export const tryLoad = (): z.infer<typeof storageSchema> | null => {
   return null
 }
 
-// TODO: Stop using names like "try". Just use "save/load". Return
-//       a dummy default object if it can't be loaded. For saving, simply log the error message
-//       but don't tell the user it couldn't be saved.
-//       Also if I show a "finished, your resume is complete" screen, then let's not handle
-//       the case where the user has no localStorage enabled. That user has mental issues anyway.
-export const trySave = (data: unknown): boolean => {
-  const res = storageSchema.partial().safeParse(data)
-  // TODO: This logic is broken beyond repair (unless you are a madlad programmer, then
-  //       you can fix it ;))
-  //       If you save one section, then it should be able to load that one only,
-  //       without being concerned if the other sections are or aren't stored.
-  //       but the current logic crashes if the data is only partially saved.
-  const current = tryLoad() ?? {}
+export const save = (data: unknown): boolean => {
+  const res = storagePartialSchema.safeParse(data)
+  const current = load() ?? {}
+
   if (res.success && current !== null) {
     localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify({ ...current, ...res.data }))
     return true

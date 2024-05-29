@@ -2,6 +2,7 @@ import { Popover, PopoverButton, Transition, PopoverPanel } from '@headlessui/re
 import { type YearMonthDate, formatMonth } from '../models/date'
 import { HiOutlineCalendar } from 'react-icons/hi'
 import { DateDisplay } from './date-display'
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6'
 
 interface YearMonthPickerProps {
   onChange: (value: YearMonthDate) => void
@@ -12,7 +13,7 @@ interface YearMonthPickerProps {
 export function YearMonthPicker ({ value, onChange, disabled = false }: YearMonthPickerProps): JSX.Element {
   return (
     <Popover>
-      <PopoverButton disabled={disabled} className="bg-slate-800 hover:bg-slate-700 transition-colors bg-opacity-35 duration-500 border-2 border-slate-800 disabled:text-gray-400 disabled:bg-slate-600 w-full flex items-center justify-center">
+      <PopoverButton disabled={disabled} className="bg-slate-800 p-2 rounded-md hover:bg-slate-700 transition-colors bg-opacity-35 duration-500 border-2 border-slate-800 disabled:text-gray-400 disabled:bg-slate-600 w-full flex items-center justify-center">
         <HiOutlineCalendar className="mr-4"/>
         <DateDisplay {...value}/>
       </PopoverButton>
@@ -31,13 +32,17 @@ export function YearMonthPicker ({ value, onChange, disabled = false }: YearMont
           {({ close }) => (
             <div className="p-8 z-50 bg-slate-500">
               <div>
-                <button onClick={() => { onChange({ ...value, year: value.year - 1 }) }}>-</button>
-                {value.year}
-                <button onClick={() => { onChange({ ...value, year: value.year + 1 }) }}>+</button>
+                <div className="flex mb-4 items-center">
+                  <button className="p-2" onClick={() => { onChange({ ...value, year: value.year - 1 }) }}><FaAngleLeft/></button>
+                  <div className="flex-1 text-center">
+                    {value.year}
+                  </div>
+                  <button className="p-2" onClick={() => { onChange({ ...value, year: value.year + 1 }) }}><FaAngleRight/></button>
+                </div>
 
                 <div className="grid grid-cols-4">
                   {Array.from({ length: 12 }).map((_, idx) => (
-                    <button key={idx} onClick={() => { onChange({ ...value, month: idx + 1 }); close() }} className={`p-4 ${value.month === idx + 1 ? 'bg-slate-800' : 'bg-slate-500'}`}>
+                    <button key={idx} onClick={() => { onChange({ ...value, month: idx + 1 }); close() }} className={`hover:bg-slate-600 duration-500 rounded-md p-4 ${value.month === idx + 1 ? 'bg-slate-800' : 'bg-slate-500'}`}>
                       {formatMonth(idx + 1)}
                     </button>
                   ))}

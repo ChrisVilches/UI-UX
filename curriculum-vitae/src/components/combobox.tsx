@@ -1,5 +1,5 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState, type ForwardedRef, forwardRef } from 'react'
 import Fuse from 'fuse.js'
 import { IoChevronDownOutline } from 'react-icons/io5'
 
@@ -21,7 +21,8 @@ interface ComboboxWithIconProps {
   onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
 }
 
-export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, list, onChange }: ComboboxWithIconProps): JSX.Element {
+export const ComboboxWithIcon = forwardRef((props: ComboboxWithIconProps, ref: ForwardedRef<HTMLInputElement>): JSX.Element => {
+  const { onBlur, value, defaultIcon, placeholder, list, onChange } = props
   const [query, setQuery] = useState('')
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['icon', 'name'], threshold: 0.3 }), [list])
@@ -59,6 +60,7 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
 
         <ComboboxInput
           className="p-2 w-full pl-10 cursor-default"
+          ref={ref}
           // displayValue={() => selected?.name ?? ''}
           // NOTE: This doesn't work, sometimes the selected ID and shown name are not congruent.
           // UPDATE: Seems to work now? Use the line commented out above if it doesn't.
@@ -78,4 +80,6 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
       </ComboboxOptions>
     </Combobox>
   )
-}
+})
+
+ComboboxWithIcon.displayName = 'ComboboxWithIcon'

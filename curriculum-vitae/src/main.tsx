@@ -13,10 +13,10 @@ const router = createBrowserRouter([
       { path: '/basic', Component: FormStepWrapped.Step1 },
       { path: '/work-history', Component: FormStepWrapped.Step2 },
       { path: '/skill-lang', Component: FormStepWrapped.Step3 },
-      { path: '/about', Component: FormStepWrapped.Step4 }
+      { path: '/about', Component: FormStepWrapped.Step4 },
+      { path: '', element: <Navigate to="/basic"/> }
     ]
-  },
-  { path: '*', element: <Navigate to="/basic" replace/> }
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement).render(

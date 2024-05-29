@@ -4,6 +4,10 @@ import { FormStepWorkHistory } from './form-step-work-history'
 import { FormStepSkillsLanguages } from './form-step-skills-languages'
 import { FormStepAbout } from './form-step-about'
 
+export interface FormStepProps {
+  onSuccess: () => void
+}
+
 function Step1 (): JSX.Element {
   const navigate = useNavigate()
   return (

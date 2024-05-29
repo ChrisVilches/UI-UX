@@ -1,6 +1,8 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
 import React, { useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
+import { IoTrashOutline } from 'react-icons/io5'
+import { Alert } from './alert'
 
 // TODO: It's better to split this component in two. They share the selections (managed by both
 //       components), but one is just the combobox and the other one is the level config.
@@ -17,16 +19,17 @@ interface LevelSelectProps {
 }
 
 function LevelSelect ({ value, onChange, levels }: LevelSelectProps): JSX.Element {
+  const base = 'text-xs p-2 duration-500 rounded-md'
   const selected = 'bg-slate-800'
   const nonSelected = 'bg-transparent text-slate-500'
   return (
-    <>
+    <div className="flex space-x-2 overflow-x-auto">
       {levels.map((level, idx) => (
-        <button type="button" key={idx} onClick={() => { onChange(idx) }} className={value === idx ? selected : nonSelected}>
+        <button type="button" key={idx} onClick={() => { onChange(idx) }} className={`${base} ${value === idx ? selected : nonSelected}`}>
           {level}
         </button>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -100,31 +103,26 @@ export function MultipleComboboxLevel ({ selected, onChange, emptyMessage, place
   return (
     <Combobox multiple value={selected} onChange={comboboxChangeHandle} onClose={() => { setQuery('') }}>
       {selected.length > 0 && (
-        <div className="mb-4 grid grid-cols-10">
+        <div className="mb-4 grid grid-cols-12 gap-y-2 gap-x-2 items-center">
           {selected.map(({ id, name, level }) => (
             <React.Fragment key={id}>
-              <div className="col-span-2">
+              <div className="col-span-3 text-ellipsis overflow-hidden whitespace-nowrap">
                 {name}
               </div>
-              <div className="col-span-6">
+              <div className="col-span-8">
                 <LevelSelect value={level} levels={levels} onChange={(value) => { changeLevel(id, value) }}/>
               </div>
-              <button
-                onClick={() => { remove(id) }}
-                className="col-span-2 block rounded-md p-2 bg-slate-700 hover:bg-red-500 transition-colors duration-300 text-xs mr-2"
-              >
-                x
-              </button>
+              <div className="col-span-1">
+                <button type="button" className="text-slate-400 p-1 hover:text-red-400 rounded-md duration-500" onClick={() => { remove(id) }}>
+                  <IoTrashOutline/>
+                </button>
+              </div>
             </React.Fragment>
           ))}
         </div>
       )}
 
-      {selected.length === 0 && (
-        <div className="p-8 my-10 rounded-md bg-slate-700">
-          {emptyMessage}
-        </div>
-      )}
+      {selected.length === 0 && <Alert className="mb-10" variant="warn">{emptyMessage}</Alert>}
 
       <ComboboxInput value={query} className="p-2" placeholder={placeholder} aria-label="Assignees" onChange={(event) => { setQuery(event.target.value) }} />
 

@@ -4,6 +4,10 @@ import { v4 } from 'uuid'
 import { WorkHistoryCard } from './work-history-card'
 import Modal from './modal'
 import { WorkHistoryForm } from './work-history-form'
+import { MdOutlineModeEdit } from 'react-icons/md'
+import { IoTrashOutline } from 'react-icons/io5'
+import { IoIosAdd } from 'react-icons/io'
+import { Alert } from './alert'
 
 function sortWorkHistoriesDesc (list: WorkHistory[]): WorkHistory[] {
   const result = [...list]
@@ -49,23 +53,45 @@ export function WorkHistoryConfig ({ list, onChange }: WorkHistoryConfigProps): 
 
   return (
     <>
-      {list.map(workHistory => (
-        <div key={workHistory.id} className="mb-4">
-          <WorkHistoryCard {...workHistory}>
-            <div className="flex justify-end">
-              <button type="button" onClick={() => { remove(workHistory.id ?? '') }}>Remove</button>
-              <button type="button" onClick={() => { openEditWorkHistory(workHistory.id) }}>Edit</button>
-            </div>
-          </WorkHistoryCard>
-        </div>
-      ))}
+      {list.length === 0
+        ? (
+          <div className="mb-10">
+            <Alert variant="warn" className='mb-4'>Add your work experience here</Alert>
+            <button type="button" onClick={() => { openEditWorkHistory() }} className="w-full md:w-auto flex items-center space-x-2 p-4 bg-green-700 rounded-md">
+              <IoIosAdd className="size-6"/>
+              <span>Add work experience</span>
+            </button>
+          </div>
+          )
+        : (
+          <div className="sticky top-0 w-full mb-4 flex justify-center bg-slate-900 py-4 bg-opacity-40">
+            <button type="button" onClick={() => { openEditWorkHistory() }} className="w-full md:w-auto flex items-center space-x-2 p-4 bg-green-700 rounded-md">
+              <IoIosAdd className="size-6"/>
+              <span>Add another work experience</span>
+            </button>
+          </div>
+          )}
+
+      <div className="mb-10 empty:hidden">
+        {list.map(workHistory => (
+          <div key={workHistory.id} className="mb-4">
+            <WorkHistoryCard {...workHistory} topRight={
+              <div className="flex justify-end">
+                <button type="button" className="mr-2 text-slate-400 p-1 hover:text-slate-300 duration-500" onClick={() => { openEditWorkHistory(workHistory.id) }}>
+                  <MdOutlineModeEdit/>
+                </button>
+                <button type="button" className="text-slate-400 p-1 hover:text-red-400 rounded-md duration-500" onClick={() => { remove(workHistory.id ?? '') }}>
+                  <IoTrashOutline/>
+                </button>
+              </div>
+            }/>
+          </div>
+        ))}
+      </div>
 
       <Modal title="Tell us about your work experience" show={showModal} onCloseModal={() => { setShowModal(false) }}>
         <WorkHistoryForm initialWorkHistory={formWorkHistory} onSubmit={saveWorkHistoryList}/>
       </Modal>
-      <div className="sticky bottom-0 w-full mb-4 flex justify-end">
-        <button type="button" onClick={() => { openEditWorkHistory() }}>+</button>
-      </div>
     </>
   )
 }

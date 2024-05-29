@@ -6,7 +6,7 @@ import { IoBagOutline } from 'react-icons/io5'
 import { MdChevronRight } from 'react-icons/md'
 import { DateDisplay } from './date-display'
 
-type WorkHistoryCardProps = { children?: ReactNode } & WorkHistory
+type WorkHistoryCardProps = { topRight?: ReactNode } & WorkHistory
 
 interface DatesProps {
   startDate: YearMonthDate
@@ -30,11 +30,16 @@ function Dates ({ startDate, endDate }: DatesProps): JSX.Element {
   )
 }
 
-export function WorkHistoryCard ({ startDate, endDate, companyName, role, description, children }: WorkHistoryCardProps): JSX.Element {
+export function WorkHistoryCard ({ startDate, endDate, companyName, role, description, topRight }: WorkHistoryCardProps): JSX.Element {
   return (
     <div className="bg-slate-800 rounded-md p-4">
-      <div className="mb-8 text-slate-500">
-        <Dates startDate={startDate} endDate={endDate}/>
+      <div className="mb-8 flex items-center">
+        <div className="text-slate-500 grow">
+          <Dates startDate={startDate} endDate={endDate}/>
+        </div>
+        <div>
+          {topRight}
+        </div>
       </div>
       <div className="flex items-center space-x-4 mb-1 font-bold">
         <PiBuildingApartmentLight/>
@@ -55,9 +60,6 @@ export function WorkHistoryCard ({ startDate, endDate, companyName, role, descri
           </div>
         </div>
       )}
-      <div>
-        {children}
-      </div>
     </div>
   )
 }

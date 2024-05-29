@@ -1,26 +1,23 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { type WorkHistory } from '../models/work-history'
-import { tryLoad, trySave } from '../storage'
+import { load, save } from '../storage'
 import { WorkHistoryConfig } from '../components/work-history-config'
 import { FormDelay } from '../components/form-delay'
+import { type FormStepProps } from './form-step-wrapped'
 
-interface FormStepWorkHistoryProps {
-  onSuccess: () => void
-}
-
-export function FormStepWorkHistory ({ onSuccess }: FormStepWorkHistoryProps): JSX.Element {
+export function FormStepWorkHistory ({ onSuccess }: FormStepProps): JSX.Element {
   const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>([])
 
   useEffect(() => {
-    const data = tryLoad()
+    const data = load({ select: ['workHistory'] })
     if (data === null) return
-    setWorkHistoryList(data.workHistory)
+    setWorkHistoryList(data.workHistory ?? [])
   }, [])
 
   const onSubmit = (ev: FormEvent): void => {
     ev.preventDefault()
     ev.stopPropagation()
-    if (trySave({ workHistory: workHistoryList })) {
+    if (save({ workHistory: workHistoryList })) {
       onSuccess()
     }
   }
@@ -33,7 +30,9 @@ export function FormStepWorkHistory ({ onSuccess }: FormStepWorkHistoryProps): J
             <WorkHistoryConfig list={workHistoryList} onChange={setWorkHistoryList}/>
           </div>
 
-          <button type="submit" className="w-full sm:w-auto sticky bottom-0 bg-green-700">{isSubmitting ? 'Wait...' : 'Save'}</button>
+          <div className="flex justify-end sticky bottom-0">
+            <button type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+          </div>
         </>
       )}
     </FormDelay>

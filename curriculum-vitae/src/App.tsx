@@ -1,7 +1,7 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cloneElement, useEffect, useState } from 'react'
-import { IconType } from 'react-icons'
+import { type IconType } from 'react-icons'
 import { BsPersonFill } from 'react-icons/bs'
 import { GrTextAlignFull } from 'react-icons/gr'
 import { IoMdMenu } from 'react-icons/io'
@@ -120,7 +120,7 @@ function App (): JSX.Element {
           </Dialog>
         </Transition>
 
-        <div className="hidden sm:block sticky sm:top-10 col-span-1 sm:col-span-4 sm:h-height">
+        <div className="hidden sm:block sticky sm:top-10 col-span-1 sm:col-span-3 sm:h-height">
           <Menu/>
         </div>
         {/*
@@ -128,7 +128,7 @@ function App (): JSX.Element {
         w-full h-screens overflow-hidden relative
         (these go on the parent container)
         */}
-        <div className="col-span-11 sm:col-span-8">
+        <div className="col-span-11 sm:col-span-9">
           <AnimatePresence mode="popLayout" custom={direction}>
             <motion.div key={key} {...transitionConfig}>
               {element != null && cloneElement(element, { key })}
