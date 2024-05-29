@@ -259,5 +259,3 @@ export const countries = countriesRaw.map(([flag, name], idx) => ({
   icon: flag,
   name
 }))
-
-console.log(countries)

@@ -23,8 +23,8 @@ interface ComboboxWithIconProps {
   placeholder: string
   list: ComboboxWithIconItem[]
   defaultIcon: ReactNode
-  value: ComboboxWithIconItem | null
-  onChange: (item: ComboboxWithIconItem | null) => void
+  value: number
+  onChange: (value: number) => void
   onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
 }
 
@@ -42,25 +42,27 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
 
   const comboboxChangeHandle = (data: ComboboxWithIconItem | null): void => {
     setQuery('')
-    onChange(data)
+    onChange(data?.id ?? -1)
   }
 
   const onClose = (): void => {
     setQuery('')
   }
 
+  const selected = list.find(item => value != null && item.id === value)
+
   return (
-    <Combobox immediate value={value} onChange={comboboxChangeHandle} onClose={onClose}>
+    <Combobox immediate value={selected} onChange={comboboxChangeHandle} onClose={onClose}>
       <div className="relative">
         <div className="pointer-events-none bg-opacity-25 w-full h-full top-0 left-0 absolute flex items-center px-3">
           <div className="grow">
-            {value?.icon ?? defaultIcon}
+            {selected?.icon ?? defaultIcon}
           </div>
           <IoChevronDownOutline className="size-4 fill-white/60 group-data-[hover]:fill-white" />
         </div>
         <ComboboxInput
           className="p-2 w-full pl-10 cursor-default"
-          displayValue={(item?: ComboboxWithIconItem): string => item?.name ?? ''}
+          displayValue={(item: ComboboxWithIconItem): string => item?.name ?? ''}
           placeholder={placeholder}
           aria-label="Assignee"
           onBlur={onBlur}

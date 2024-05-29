@@ -30,7 +30,13 @@ function LevelSelect ({ value, onChange, levels }: LevelSelectProps): JSX.Elemen
   )
 }
 
-interface Item {
+export interface MultipleComboboxLevelItem {
+  id: string
+  name: string
+  level: number
+}
+
+interface MultipleComboboxOption {
   id: string
   name: string
 }
@@ -38,27 +44,27 @@ interface Item {
 interface MultipleComboboxLevelProps {
   emptyMessage: string
   placeholder: string
-  list: Item[]
+  list: MultipleComboboxOption[]
   levels: string[]
   defaultLevel: number
+  selected: MultipleComboboxLevelItem[]
+  onChange: (items: MultipleComboboxLevelItem[]) => void
 }
 
-export function MultipleComboboxLevel ({ emptyMessage, placeholder, list, levels, defaultLevel }: MultipleComboboxLevelProps): JSX.Element {
-  const [selectedItems, setSelectedItems] = useState<Item[]>([])
+export function MultipleComboboxLevel ({ selected, onChange, emptyMessage, placeholder, list, levels, defaultLevel }: MultipleComboboxLevelProps): JSX.Element {
   const [query, setQuery] = useState('')
-  const [itemsLevel, setItemsLevel] = useState<Record<string, number>>({})
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['name'], threshold: 0.3 }), [list])
 
-  const getFiltered = (): Item[] => {
+  const getFiltered = (): MultipleComboboxOption[] => {
     const text = query.trim().toLowerCase()
     if (text.length === 0) return []
 
     // This is to avoid showing already selected options.
-    const selected = new Set([...selectedItems.map(s => s.name)])
+    const selectedSet = new Set([...selected.map(s => s.name)])
 
     const result = fuse.search(text).map(res => res.item) // list.filter(({ name }) => name.toLowerCase().includes(text))
-      .filter(({ name }) => !selected.has(name))
+      .filter(({ name }) => !selectedSet.has(name))
 
     // This is to add the free input at the end IF it's not in the suggestion list
     if (!result.map(s => s.name.trim().toLowerCase()).includes(text)) {
@@ -68,45 +74,40 @@ export function MultipleComboboxLevel ({ emptyMessage, placeholder, list, levels
     return result
   }
 
-  const changeLevel = (id: string, value: number): void => {
-    setItemsLevel(l => ({
-      ...l,
-      [id]: value
-    }))
+  const changeLevel = (id: string, level: number): void => {
+    onChange(
+      [...selected].map((item) => item.id === id ? ({ ...item, level }) : item)
+    )
   }
 
   const remove = (id: string): void => {
-    setSelectedItems(items => items.filter(s => s.id !== id))
-    setItemsLevel(l => {
-      const result = { ...l }
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete result[id]
-      return result
-    })
+    onChange(selected.filter(s => s.id !== id))
   }
 
-  const comboboxChangeHandle = (data: Item[]): void => {
-    setSelectedItems(data)
-    for (const { id } of data) {
-      if (!(id in itemsLevel)) {
-        setItemsLevel(l => ({ ...l, [id]: defaultLevel }))
-      }
+  const setDefaultLevel = (data: MultipleComboboxOption | MultipleComboboxLevelItem): MultipleComboboxLevelItem => {
+    if ('level' in data) {
+      return data
+    } else {
+      return { ...data, level: defaultLevel }
     }
+  }
 
+  const comboboxChangeHandle = (data: MultipleComboboxOption[]): void => {
+    onChange(data.map(item => setDefaultLevel(item)))
     setQuery('')
   }
 
   return (
-    <Combobox multiple value={selectedItems} onChange={comboboxChangeHandle} onClose={() => { setQuery('') }}>
-      {selectedItems.length > 0 && (
+    <Combobox multiple value={selected} onChange={comboboxChangeHandle} onClose={() => { setQuery('') }}>
+      {selected.length > 0 && (
         <div className="mb-4 grid grid-cols-10">
-          {selectedItems.map(({ id, name }) => (
+          {selected.map(({ id, name, level }) => (
             <React.Fragment key={id}>
               <div className="col-span-2">
                 {name}
               </div>
               <div className="col-span-6">
-                <LevelSelect value={itemsLevel[id]} levels={levels} onChange={(value) => { changeLevel(id, value) }}/>
+                <LevelSelect value={level} levels={levels} onChange={(value) => { changeLevel(id, value) }}/>
               </div>
               <button
                 onClick={() => { remove(id) }}
@@ -119,7 +120,7 @@ export function MultipleComboboxLevel ({ emptyMessage, placeholder, list, levels
         </div>
       )}
 
-      {selectedItems.length === 0 && (
+      {selected.length === 0 && (
         <div className="p-8 my-10 rounded-md bg-slate-700">
           {emptyMessage}
         </div>

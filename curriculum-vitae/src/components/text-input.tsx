@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { type ForwardedRef, forwardRef } from 'react'
 
 interface TextInputProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   errorMessage?: string
@@ -6,10 +6,9 @@ interface TextInputProps extends React.DetailedHTMLProps<React.InputHTMLAttribut
   label: string
 }
 
-export const TextInput = forwardRef((props: TextInputProps, ref) => {
+export const TextInput = forwardRef((props: TextInputProps, ref: ForwardedRef<HTMLInputElement>) => {
   const { errorMessage, id, label, ...other } = props
 
-  // TODO: Compilation error here.
   return (
     <>
       <div className="relative">

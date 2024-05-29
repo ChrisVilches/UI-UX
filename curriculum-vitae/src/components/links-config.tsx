@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type FormEvent, type ForwardedRef, type MutableRefObject, forwardRef, useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { RiYoutubeLine, RiInstagramLine, RiFacebookBoxLine, RiGithubLine, RiLinkedinBoxLine, RiSoundcloudLine, RiGitlabLine } from 'react-icons/ri'
 import { HiOutlineLink } from 'react-icons/hi'
@@ -44,10 +44,14 @@ const schema = z.object({
 })
 
 const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, onCancel, enableAutoFocus = false }: EditLinkProps, ref2: ForwardedRef<HTMLInputElement>) => {
-  const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm({
+  const { control, register, handleSubmit, reset, formState: { errors, isValid } } = useForm({
     resolver: zodResolver(schema),
     mode: 'all',
     defaultValues: { url }
+  })
+  const urlValue = useWatch({
+    name: 'url',
+    control
   })
 
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
@@ -83,8 +87,8 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
   return (
     <form onSubmit={onSubmitForm}>
       <input {...inputProps} ref={setRef}></input>
-      <button type="submit">OK</button>
-      {(errors.url != null) && <span className="text-red-500">{errors.url?.message as string}</span>}
+      <button type="submit" disabled={!isValid} className={isValid ? 'bg-green-500' : 'bg-gray-500'}>OK</button>
+      {(errors.url != null && urlValue.trim().length > 0) && <span className="text-red-500">{errors.url?.message as string}</span>}
 
       {(onCancel != null) && <button onClick={onCancel}>x</button>}
     </form>
@@ -93,43 +97,44 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
 
 EditLink.displayName = 'EditLink'
 
-export function LinksConfig (): JSX.Element {
-  const [links, setLinks] = useState([
-    'https://www.google.com',
-    'https://www.amazon.com',
-    'https://www.youtube.com'
-  ])
+interface LinksConfigProps {
+  list: string[]
+  onChange: (list: string[]) => void
+}
 
+export function LinksConfig ({ list, onChange }: LinksConfigProps): JSX.Element {
   const [editing, setEditing] = useState(-1)
 
   const update = ({ url }: { url: string }): void => {
     setEditing(-1)
-    setLinks(l => {
-      const result = [...l]
+    onChange((() => {
+      const result = [...list]
       result[editing] = url
       return result
-    })
+    })())
   }
 
   const addUrl = ({ url }: { url: string }): void => {
-    if (links.includes(url.trim())) return
-    setLinks(l => [...l, url.trim()])
+    if (list.includes(url.trim())) return
+    onChange([...list, url.trim()])
     inputRef.current?.focus()
   }
 
   const remove = (idx: number): void => {
-    setLinks(l => {
-      const res = [...l]
-      res.splice(idx, 1)
-      return res
-    })
+    const res = [...list]
+    res.splice(idx, 1)
+    onChange(res)
   }
 
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
+  // TODO: Clicking on the main Submit button triggers the submit on the "link add form" xd
+  //       Now it won't show (I hid the message if the URL input is empty), but make
+  //       sure it's not getting triggered anyway
+
   return (
     <>
-      {links.map((url, idx) => (
+      {list.map((url, idx) => (
         <div key={idx}>
           {editing === idx
             ? (

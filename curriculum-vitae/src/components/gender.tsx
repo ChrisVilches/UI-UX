@@ -3,11 +3,17 @@ import { PiGenderNonbinaryLight } from 'react-icons/pi'
 import { FaCheck } from 'react-icons/fa'
 import { type IconType } from 'react-icons'
 
-export type GenderValues = 'male' | 'female' | 'other'
+export const genderValues = ['male', 'female', 'other'] as const
+
+export type GenderValue = typeof genderValues[number]
+
+// export function isGenderValue (s: unknown): s is GenderValues {
+//   return typeof s === 'string' && genderValues.includes(s as GenderValues)
+// }
 
 interface GenderSelectProps {
-  onChange: (value: GenderValues) => void
-  value: GenderValues
+  onChange: (value: GenderValue) => void
+  value: GenderValue
 }
 
 function Check (): JSX.Element {
@@ -19,7 +25,7 @@ function Check (): JSX.Element {
 }
 
 interface Item {
-  itemValue: GenderValues
+  itemValue: GenderValue
   Component: IconType
   selectedClass: string
 }
