@@ -1,5 +1,5 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
-import { ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 import { IoChevronDownOutline } from 'react-icons/io5'
 
@@ -23,27 +23,27 @@ interface ComboboxWithIconProps {
   onChange: (item: ComboboxWithIconItem | null) => void
 }
 
-export function ComboboxWithIcon({ value, defaultIcon, placeholder, list, onChange }: ComboboxWithIconProps): JSX.Element {
+export function ComboboxWithIcon ({ value, defaultIcon, placeholder, list, onChange }: ComboboxWithIconProps): JSX.Element {
   // const [selectedItem, setSelectedItem] = useState<ComboboxWithIconItem | null>(null)
   const [query, setQuery] = useState('')
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['icon', 'name'], threshold: 0.3 }), [list])
 
-  const getFiltered = () => {
+  const getFiltered = (): ComboboxWithIconItem[] => {
     const text = query.trim().toLowerCase()
     if (text.length === 0) return list
-    
+
     return fuse.search(text).map(res => res.item)
   }
 
-   const comboboxChangeHandle = (data: ComboboxWithIconItem | null) => {
+  const comboboxChangeHandle = (data: ComboboxWithIconItem | null): void => {
     // TODO: This one shouldn't be necessary if value comes from parent.
     // setSelectedItem(data)
     setQuery('')
     onChange(data)
   }
 
-  const onClose = () => {
+  const onClose = (): void => {
     setQuery('')
   }
 
@@ -58,10 +58,10 @@ export function ComboboxWithIcon({ value, defaultIcon, placeholder, list, onChan
         </div>
         <ComboboxInput
           className="p-2 w-full pl-10 cursor-default"
-          displayValue={(item?: ComboboxWithIconItem) => item?.name || ''}
+          displayValue={(item?: ComboboxWithIconItem): string => item?.name ?? ''}
           placeholder={placeholder}
           aria-label="Assignee"
-          onChange={(event) => setQuery(event.target.value)} />
+          onChange={(event) => { setQuery(event.target.value) }} />
       </div>
 
       <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] h-44 z-50">

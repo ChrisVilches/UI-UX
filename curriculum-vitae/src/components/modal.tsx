@@ -1,5 +1,5 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 interface ModalProps {
   show: boolean
@@ -7,7 +7,7 @@ interface ModalProps {
   children: ReactNode
 }
 
-export default function Modal({ show, onCloseModal, children }: ModalProps) {
+export default function Modal ({ show, onCloseModal, children }: ModalProps): JSX.Element {
   return (
     <Transition appear show={show}>
       <Dialog as="div" className="relative z-10 focus:outline-none" onClose={onCloseModal}>
@@ -23,6 +23,7 @@ export default function Modal({ show, onCloseModal, children }: ModalProps) {
             >
               <DialogPanel className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl">
                 <DialogTitle as="h3" className="text-base/7 font-medium text-white">
+                  {/* TODO: This title should be a prop */}
                   Tell us about your work experience
                 </DialogTitle>
                 {children}

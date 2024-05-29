@@ -1,16 +1,16 @@
-import { FormEvent, MutableRefObject, useEffect, useRef, useState } from "react"
-import { YearMonthPicker } from "./year-month-picker"
-import { WorkHistory } from "../models/work-history"
-import { Field, Checkbox, Label } from "@headlessui/react"
-import { HiCheck } from "react-icons/hi";
+import { type FormEvent, type MutableRefObject, useEffect, useRef, useState } from 'react'
+import { YearMonthPicker } from './year-month-picker'
+import { type WorkHistory } from '../models/work-history'
+import { Field, Checkbox, Label } from '@headlessui/react'
+import { HiCheck } from 'react-icons/hi'
 
 interface WorkHistoryFormProps {
-  initialWorkHistory: WorkHistory,
+  initialWorkHistory: WorkHistory
   onSubmit: (data: WorkHistory) => void
 }
 
 // TODO: Use React Forms here.
-export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFormProps) {
+export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFormProps): JSX.Element {
   const [companyName, setCompanyName] = useState('')
   const [role, setRole] = useState('')
   const [description, setDescription] = useState('')
@@ -27,7 +27,7 @@ export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFor
     endDate: stillWork ? undefined : endDate
   })
 
-  const submitHandle = (ev: FormEvent) => {
+  const submitHandle = (ev: FormEvent): void => {
     ev.preventDefault()
     ev.stopPropagation()
     onSubmit(getData())
@@ -71,23 +71,23 @@ export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFor
           >
             <HiCheck className="hidden size-4 fill-black group-data-[checked]:block" />
           </Checkbox>
-          <Label>I'm still working here</Label>
+          <Label>I&apos;m still working here</Label>
         </Field>
       </div>
 
       <div className="relative mb-4">
-        <input type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" ref={inputRef} value={companyName} onChange={(ev) => { setCompanyName(ev.target.value) }} placeholder=""/>
-        <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Company name</label>
+        <input id="company-name" type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" ref={inputRef} value={companyName} onChange={(ev) => { setCompanyName(ev.target.value) }} placeholder=""/>
+        <label htmlFor="company-name" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Company name</label>
       </div>
 
       <div className="relative mb-4">
-        <input type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" value={role} onChange={(ev) => { setRole(ev.target.value) }} placeholder=""/>
-        <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Role</label>
+        <input id="role" type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" value={role} onChange={(ev) => { setRole(ev.target.value) }} placeholder=""/>
+        <label htmlFor="role" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Role</label>
       </div>
 
       <div className="relative mb-4">
-        <textarea className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" value={description} onChange={(ev) => { setDescription(ev.target.value) }} placeholder=""/>
-        <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Description</label>
+        <textarea id="description" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" value={description} onChange={(ev) => { setDescription(ev.target.value) }} placeholder=""/>
+        <label htmlFor="description" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Description</label>
       </div>
 
       <button disabled={!isValid} className={`${isValid ? 'bg-green-500' : 'bg-red-500'}`} type="submit">{isNew ? 'Save' : 'Edit'}</button>

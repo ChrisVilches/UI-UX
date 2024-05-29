@@ -1,7 +1,7 @@
-import { Popover, PopoverButton, Transition, PopoverPanel } from "@headlessui/react"
-import { YearMonthDate, formatMonth } from "../models/date"
-import { HiOutlineCalendar } from "react-icons/hi";
-import { DateDisplay } from "./date-display";
+import { Popover, PopoverButton, Transition, PopoverPanel } from '@headlessui/react'
+import { type YearMonthDate, formatMonth } from '../models/date'
+import { HiOutlineCalendar } from 'react-icons/hi'
+import { DateDisplay } from './date-display'
 
 interface YearMonthPickerProps {
   onChange: (value: YearMonthDate) => void
@@ -14,7 +14,7 @@ interface YearMonthPickerProps {
 //       (start date or end date) in the same place, so that the user knows it's the left or right one.
 //       This is also because dialogs + popover looks bad on mobile, not sure if it can be fixed.
 
-export function YearMonthPicker({ value, onChange, disabled = false }: YearMonthPickerProps) {
+export function YearMonthPicker ({ value, onChange, disabled = false }: YearMonthPickerProps): JSX.Element {
   return (
     <Popover>
       <PopoverButton disabled={disabled} className="bg-slate-800 hover:bg-slate-700 transition-colors bg-opacity-35 duration-500 border-2 border-slate-800 disabled:text-gray-400 disabled:bg-slate-600 w-full flex items-center justify-center">
@@ -38,8 +38,8 @@ export function YearMonthPicker({ value, onChange, disabled = false }: YearMonth
               <div>
                 <button onClick={() => { onChange({ ...value, year: value.year - 1 }) }}>-</button>
                 {value.year}
-                <button onClick={() => { onChange({ ...value, year: value.year + 1 }) }}>+</button>    
-              
+                <button onClick={() => { onChange({ ...value, year: value.year + 1 }) }}>+</button>
+
                 <div className="grid grid-cols-4">
                   {Array.from({ length: 12 }).map((_, idx) => (
                     <button key={idx} onClick={() => { onChange({ ...value, month: idx + 1 }); close() }} className={`p-4 ${value.month === idx + 1 ? 'bg-slate-800' : 'bg-slate-500'}`}>

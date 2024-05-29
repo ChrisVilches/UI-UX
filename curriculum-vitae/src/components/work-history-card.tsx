@@ -1,10 +1,10 @@
-import { ReactNode } from "react"
-import { YearMonthDate } from "../models/date"
-import { WorkHistory } from "../models/work-history"
-import { PiBuildingApartmentLight } from "react-icons/pi";
-import { IoBagOutline } from "react-icons/io5";
-import { MdChevronRight } from "react-icons/md";
-import { DateDisplay } from "./date-display";
+import { type ReactNode } from 'react'
+import { type YearMonthDate } from '../models/date'
+import { type WorkHistory } from '../models/work-history'
+import { PiBuildingApartmentLight } from 'react-icons/pi'
+import { IoBagOutline } from 'react-icons/io5'
+import { MdChevronRight } from 'react-icons/md'
+import { DateDisplay } from './date-display'
 
 type WorkHistoryCardProps = { children?: ReactNode } & WorkHistory
 
@@ -13,22 +13,24 @@ interface DatesProps {
   endDate?: YearMonthDate
 }
 
-function Dates({ startDate, endDate }: DatesProps) {
+function Dates ({ startDate, endDate }: DatesProps): JSX.Element {
   return (
     <div className="text-sm">
       <DateDisplay {...startDate}/>
       <MdChevronRight className="inline mx-2"/>
 
-      {typeof endDate === 'undefined' ? (
-        <span><i>Present</i></span>
-      ) : (
-        <DateDisplay {...endDate}/>
-      )}
+      {typeof endDate === 'undefined'
+        ? (
+          <span><i>Present</i></span>
+          )
+        : (
+          <DateDisplay {...endDate}/>
+          )}
     </div>
   )
 }
 
-export function WorkHistoryCard({ startDate, endDate, companyName, role, description, children }: WorkHistoryCardProps) {
+export function WorkHistoryCard ({ startDate, endDate, companyName, role, description, children }: WorkHistoryCardProps): JSX.Element {
   return (
     <div className="bg-slate-800 rounded-md p-4">
       <div className="mb-8 text-slate-500">

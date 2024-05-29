@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { useState } from 'react'
 import { MultipleComboboxLevel } from './components/multiple-combobox-level'
 import { skills } from './data/skills'
 import { languages } from './data/languages'
 import { countries } from './data/countries'
-import { ComboboxWithIcon, ComboboxWithIconItem } from './components/combobox'
-import { GenderSelect, GenderValues } from './components/gender'
+import { ComboboxWithIcon, type ComboboxWithIconItem } from './components/combobox'
+import { GenderSelect, type GenderValues } from './components/gender'
 import { WorkHistoryConfig } from './components/work-history-config'
-import { useForm, useWatch } from "react-hook-form"
+import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LinksConfig } from './components/links-config'
@@ -26,7 +28,7 @@ const schema = z.object({
   nationality: z.object({ id: z.number() }, { message: 'Select nationality' })
 })
 
-function App() {
+function App (): JSX.Element {
   const [gender, setGender] = useState<GenderValues>('male')
 
   const { register, handleSubmit, setValue, control, trigger, formState: { errors } } = useForm({
@@ -43,7 +45,7 @@ function App() {
   //       using forwardRef, also I'm not sure if Headless UI combobox would work with this.
   const nationality = useWatch({ control, name: 'nationality' })
 
-  const onSubmit = (data: unknown) => {
+  const onSubmit = (data: unknown): void => {
     console.log(data)
   }
 
@@ -53,19 +55,19 @@ function App() {
     <div className="container mx-auto lg:w-8/12 px-4">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="my-4">
-        <div className="relative mb-4">
-            <input {...register('fullName', { required: true, minLength: 2 })} type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
-            <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
+          <div className="relative mb-4">
+            <input id="full-name" {...register('fullName', { required: true, minLength: 2 })} type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
+            <label htmlFor="full-name" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
               Full name
             </label>
-            {errors.fullName && <span className="text-red-500">{errors.fullName.message}</span>}
+            {(errors.fullName != null) && <span className="text-red-500">{errors.fullName.message}</span>}
           </div>
           <div className="relative mb-4">
-            <input {...register('email', { required: true, minLength: 2 })} type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
-            <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
+            <input id="email" {...register('email', { required: true, minLength: 2 })} type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
+            <label htmlFor="email" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
               E-mail
             </label>
-            {errors.email && <span className="text-red-500">{errors.email.message}</span>}
+            {(errors.email != null) && <span className="text-red-500">{errors.email.message}</span>}
           </div>
           <div className="mb-4 flex justify-center">
             <GenderSelect value={gender} onChange={setGender}/>
@@ -75,16 +77,16 @@ function App() {
               value={nationality}
               onChange={(v) => {
                 setValue('nationality', v)
-                trigger('nationality')
+                trigger('nationality').catch(console.error)
               }}
               defaultIcon={<span>🌍</span>}
               list={countries}
               placeholder="Select your nationality"/>
-              {errors.nationality && <span className="text-red-500">{errors.nationality.message}</span>}
+            {(errors.nationality != null) && <span className="text-red-500">{errors.nationality.message}</span>}
           </div>
           <div className="relative mb-4">
-            <textarea className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
-            <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
+            <textarea id="about" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
+            <label htmlFor="about" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
               About me
             </label>
           </div>

@@ -1,9 +1,10 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FormEvent, ForwardedRef, MutableRefObject, forwardRef, useEffect, useRef, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { RiYoutubeLine, RiInstagramLine, RiFacebookBoxLine, RiGithubLine, RiLinkedinBoxLine, RiSoundcloudLine, RiGitlabLine } from "react-icons/ri";
-import { HiOutlineLink } from "react-icons/hi";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { type FormEvent, type ForwardedRef, type MutableRefObject, forwardRef, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { RiYoutubeLine, RiInstagramLine, RiFacebookBoxLine, RiGithubLine, RiLinkedinBoxLine, RiSoundcloudLine, RiGitlabLine } from 'react-icons/ri'
+import { HiOutlineLink } from 'react-icons/hi'
+import { type IconType } from 'react-icons'
 
 const icons = Object.entries({
   'youtube.com': RiYoutubeLine,
@@ -15,7 +16,7 @@ const icons = Object.entries({
   'gitlab.com': RiGitlabLine
 })
 
-function urlToIcon(url: string) {
+function urlToIcon (url: string): IconType {
   let host = ''
   try {
     host = (new URL(url.toLowerCase())).host
@@ -35,13 +36,14 @@ interface EditLinkProps {
   url: string
   onSubmit: (data: { url: string }) => void
   onCancel?: () => void
+  enableAutoFocus?: boolean
 }
 
 const schema = z.object({
   url: z.string().url('Enter a valid URL').min(3)
 })
 
-const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, onCancel }: EditLinkProps, ref2: ForwardedRef<HTMLInputElement>) => {
+const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, onCancel, enableAutoFocus = false }: EditLinkProps, ref2: ForwardedRef<HTMLInputElement>) => {
   const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm({
     resolver: zodResolver(schema),
     mode: 'all',
@@ -51,22 +53,24 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
   const { ref, ...inputProps } = register('url')
-  
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [url])
 
-  const onSubmitForm = (ev: FormEvent) => {
+  useEffect(() => {
+    if (enableAutoFocus) {
+      inputRef.current?.focus()
+    }
+  }, [url, enableAutoFocus])
+
+  const onSubmitForm = (ev: FormEvent): void => {
     ev.preventDefault()
     ev.stopPropagation()
     console.log('SUBMITING')
-    handleSubmit(onSubmit)(ev)
+    handleSubmit(onSubmit)(ev).catch(console.error)
     if (isValid) {
       reset()
     }
   }
 
-  const setRef = (e: HTMLInputElement | null) => {
+  const setRef = (e: HTMLInputElement | null): void => {
     ref(e)
     inputRef.current = e
     if (typeof ref2 === 'function') {
@@ -80,17 +84,16 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
     <form onSubmit={onSubmitForm}>
       <input {...inputProps} ref={setRef}></input>
       <button type="submit">OK</button>
-      {errors.url && <span className="text-red-500">{errors.url?.message as string}</span>}
-      
-      {onCancel && <button onClick={onCancel}>x</button>}
+      {(errors.url != null) && <span className="text-red-500">{errors.url?.message as string}</span>}
+
+      {(onCancel != null) && <button onClick={onCancel}>x</button>}
     </form>
   )
 })
 
-// TODO: Linter should tell me about adding this line. Configure linter first.
-// EditLink.displayName = 'EditLink'
+EditLink.displayName = 'EditLink'
 
-export function LinksConfig() {
+export function LinksConfig (): JSX.Element {
   const [links, setLinks] = useState([
     'https://www.google.com',
     'https://www.amazon.com',
@@ -99,7 +102,7 @@ export function LinksConfig() {
 
   const [editing, setEditing] = useState(-1)
 
-  const update = ({ url }: { url: string }) => {
+  const update = ({ url }: { url: string }): void => {
     setEditing(-1)
     setLinks(l => {
       const result = [...l]
@@ -108,13 +111,13 @@ export function LinksConfig() {
     })
   }
 
-  const addUrl = ({ url }: { url: string }) => {
-    if (links.indexOf(url.trim()) !== -1) return
+  const addUrl = ({ url }: { url: string }): void => {
+    if (links.includes(url.trim())) return
     setLinks(l => [...l, url.trim()])
     inputRef.current?.focus()
   }
 
-  const remove = (idx: number) => {
+  const remove = (idx: number): void => {
     setLinks(l => {
       const res = [...l]
       res.splice(idx, 1)
@@ -124,32 +127,33 @@ export function LinksConfig() {
 
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-  // TODO: Note, linting will tell me not to use onClick on a div, but this one is OK
-  //       since I have a button that can be clicked using the keyboard. Ignore the lint rule
-  //       for this code.
   return (
     <>
       {links.map((url, idx) => (
         <div key={idx}>
-          {editing === idx ? (
-            <EditLink url={url} onSubmit={update} onCancel={() => { setEditing(-1) }}/>
-          ) : (
-            <>
-              <div className="flex items-center space-x-4">
-                {(() => {
-                  const Icon = urlToIcon(url)
-                  return <Icon className="size-4"/>
-                })()}
-                <div className="grow" onClick={() => { setEditing(idx) }}>
-                  {url}
+          {editing === idx
+            ? (
+              <EditLink enableAutoFocus={true} url={url} onSubmit={update} onCancel={() => { setEditing(-1) }}/>
+              )
+            : (
+              <>
+                <div className="flex items-center space-x-4">
+                  {((): JSX.Element => {
+                    const Icon = urlToIcon(url)
+                    return <Icon className="size-4"/>
+                  })()}
+                  <div className="grow">
+                    <a href={url} target="_blank" rel="noreferrer">
+                      {url}
+                    </a>
+                  </div>
+                  <div>
+                    <button type="button" onClick={() => { setEditing(idx) }}>Edit</button>
+                    <button type="button" onClick={() => { remove(idx) }}>Remove</button>
+                  </div>
                 </div>
-                <div>
-                  <button type="button" onClick={() => { setEditing(idx) }}>Edit</button>
-                  <button type="button" onClick={() => { remove(idx) }}>Remove</button>
-                </div>
-              </div>
-            </>
-          )}
+              </>
+              )}
         </div>
       ))}
 
