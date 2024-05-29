@@ -17,7 +17,7 @@ const router = createBrowserRouter([
       { path: '', element: <Navigate to="/basic"/> }
     ]
   }
-])
+], { basename: import.meta.env.BASE_URL })
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement).render(
   <React.StrictMode>
