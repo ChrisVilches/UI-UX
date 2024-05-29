@@ -9,16 +9,13 @@ interface WorkHistoryFormProps {
   onSubmit: (data: WorkHistory) => void
 }
 
+// TODO: Use React Forms here.
 export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFormProps) {
   const [companyName, setCompanyName] = useState('')
   const [role, setRole] = useState('')
   const [description, setDescription] = useState('')
-
-  // TODO: Use a different default value.
   const [startDate, setStartDate] = useState({ year: -1, month: 1 })
   const [endDate, setEndDate] = useState({ year: -1, month: 1 })
-
-  // TODO: Set this from the endDate. If it's undefined or defined.
   const [stillWork, setStillWork] = useState(false)
 
   const getData = (): WorkHistory => ({
@@ -32,6 +29,7 @@ export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFor
 
   const submitHandle = (ev: FormEvent) => {
     ev.preventDefault()
+    ev.stopPropagation()
     onSubmit(getData())
   }
 

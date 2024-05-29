@@ -15,6 +15,7 @@ const createDummyWorkHistory = () => ({
   endDate: { year: 2019, month: 1 }
 })
 
+// TODO: The sort is fucked up.
 function sortWorkHistoriesDesc(list: WorkHistory[]) {
     const result = [...list]
     result.sort(compareWorkHistory)
@@ -59,7 +60,7 @@ export function WorkHistoryConfig() {
   return (
     <>
       <div className="sticky top-0 w-full mb-4 flex justify-center" style={{ backgroundColor: '#24242477' }}>
-        <button onClick={() => { openEditWorkHistory() }}>+</button>
+        <button type="button" onClick={() => { openEditWorkHistory() }}>+</button>
       </div>
 
       {workHistoryList.map(workHistory => (

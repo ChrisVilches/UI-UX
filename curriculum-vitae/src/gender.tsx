@@ -40,7 +40,7 @@ export function GenderSelect({ onChange, value }: GenderSelectProps) {
   return (
     <div className="flex flex-row space-x-4">
       {items.map(({ itemValue, Component, selectedClass }, idx) => (
-        <button key={idx} className={`${baseClass} ${value === itemValue ? selectedClass : nonSelected}`} onClick={() => { onChange(itemValue) }}>
+        <button type="button" key={idx} className={`${baseClass} ${value === itemValue ? selectedClass : nonSelected}`} onClick={() => { onChange(itemValue) }}>
           <div>
             <div className="m-2 absolute">
               {value === itemValue && <Check/>}

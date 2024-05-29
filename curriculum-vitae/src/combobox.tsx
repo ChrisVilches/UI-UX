@@ -6,7 +6,10 @@ import { IoChevronDownOutline } from 'react-icons/io5'
 // TODO: Hopefully this input can also be used in React Forms. It should, since it's just an input
 //       with a value. Should be the same. I just have to pass the data from React Forms to here.
 
-interface Item {
+// TODO: Error... choose a value, then click again on the input. THe dropdown should open again,
+//       but it doesn't.
+
+export interface ComboboxWithIconItem {
   id: number
   icon: ReactNode
   name: string
@@ -14,12 +17,14 @@ interface Item {
 
 interface ComboboxWithIconProps {
   placeholder: string
-  list: Item[]
+  list: ComboboxWithIconItem[]
   defaultIcon: ReactNode
+  value: ComboboxWithIconItem | null
+  onChange: (item: ComboboxWithIconItem | null) => void
 }
 
-export function ComboboxWithIcon({ defaultIcon, placeholder, list }: ComboboxWithIconProps): JSX.Element {
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
+export function ComboboxWithIcon({ value, defaultIcon, placeholder, list, onChange }: ComboboxWithIconProps): JSX.Element {
+  // const [selectedItem, setSelectedItem] = useState<ComboboxWithIconItem | null>(null)
   const [query, setQuery] = useState('')
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['icon', 'name'], threshold: 0.3 }), [list])
@@ -31,9 +36,11 @@ export function ComboboxWithIcon({ defaultIcon, placeholder, list }: ComboboxWit
     return fuse.search(text).map(res => res.item)
   }
 
-   const comboboxChangeHandle = (data: Item | null) => {
-    setSelectedItem(data)
+   const comboboxChangeHandle = (data: ComboboxWithIconItem | null) => {
+    // TODO: This one shouldn't be necessary if value comes from parent.
+    // setSelectedItem(data)
     setQuery('')
+    onChange(data)
   }
 
   const onClose = () => {
@@ -41,30 +48,21 @@ export function ComboboxWithIcon({ defaultIcon, placeholder, list }: ComboboxWit
   }
 
   return (
-    <Combobox immediate value={selectedItem} onChange={comboboxChangeHandle} onClose={onClose}>
+    <Combobox immediate value={value} onChange={comboboxChangeHandle} onClose={onClose}>
       <div className="relative">
         <div className="pointer-events-none bg-opacity-25 w-full h-full top-0 left-0 absolute flex items-center px-3">
           <div className="grow">
-            {selectedItem?.icon ?? defaultIcon}
+            {value?.icon ?? defaultIcon}
           </div>
           <IoChevronDownOutline className="size-4 fill-white/60 group-data-[hover]:fill-white" />
         </div>
         <ComboboxInput
           className="p-2 w-full pl-10 cursor-default"
-          displayValue={(item?: Item) => item?.name || ''}
+          displayValue={(item?: ComboboxWithIconItem) => item?.name || ''}
           placeholder={placeholder}
           aria-label="Assignee"
           onChange={(event) => setQuery(event.target.value)} />
-
       </div>
-
-      {/* TODO: USE SOME OF THIS <div className="my-10">
-        {selectedItem.id !== -1 ? (
-          <span>{selectedItem.icon} {selectedItem.name}</span>
-        ) : (
-          <div>{defaultIcon}{buttonPlaceholder}</div>
-        )}
-      </div> */}
 
       <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] h-44 z-50">
         {getFiltered().map((item) => (

@@ -18,7 +18,7 @@ function Dates({ startDate, endDate }: DatesProps) {
     <div className="text-sm">
       <DateDisplay {...startDate}/>
       <MdChevronRight className="inline mx-2"/>
-      
+
       {typeof endDate === 'undefined' ? (
         <span><i>Present</i></span>
       ) : (

@@ -5,6 +5,11 @@ import Fuse from 'fuse.js'
 // TODO: It's better to split this component in two. They share the selections (managed by both
 //       components), but one is just the combobox and the other one is the level config.
 
+// TODO: When adding one by pressing enter, it doesn't blur out of the input. That's great if I want
+//       to continue typing and adding a new one, but if you consider the first time the user opens
+//       the dropdown, the input is first focused but without the scrolls removed (nor the dropdown opened)
+//       I think that's the desired state for after the addition of an item.
+
 interface LevelSelectProps {
   value: number
   onChange: (s: number) => void
@@ -17,7 +22,7 @@ function LevelSelect({ value, onChange, levels }: LevelSelectProps) {
   return (
     <>
       {levels.map((level, idx) => (
-        <button key={idx} onClick={() => onChange(idx)} className={value === idx ? selected : nonSelected}>
+        <button type="button" key={idx} onClick={() => onChange(idx)} className={value === idx ? selected : nonSelected}>
           {level}
         </button>
       ))}
