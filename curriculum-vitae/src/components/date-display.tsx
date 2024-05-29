@@ -1,4 +1,4 @@
-import { formatMonth } from "./models/dates"
+import { formatMonth } from "../models/date"
 
 interface DateProps {
   month: number

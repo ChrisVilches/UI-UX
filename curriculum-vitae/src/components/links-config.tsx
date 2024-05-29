@@ -37,9 +37,6 @@ interface EditLinkProps {
   onCancel?: () => void
 }
 
-// TODO: Maybe try adding https:// to URLs by default, so that users can type "www.youtube.com"
-// TODO: It seems zod accepts almost any string as URL. You have to really
-//       write a fucked up string so it sees it as invalid.
 const schema = z.object({
   url: z.string().url('Enter a valid URL').min(3)
 })
@@ -55,8 +52,6 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
 
   const { ref, ...inputProps } = register('url')
   
-  // TODO: Clicking on "remove" on one link, enables edition on another link.
-
   useEffect(() => {
     inputRef.current?.focus()
   }, [url])
@@ -81,12 +76,9 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
     }
   }
 
-  // TODO: Blurring out of the input and into the button would be a normal user behaviour
-  //       but this would cancel the edition lol.
-
   return (
     <form onSubmit={onSubmitForm}>
-      <input {...inputProps} ref={setRef} onBlur={() => {z}}></input>
+      <input {...inputProps} ref={setRef}></input>
       <button type="submit">OK</button>
       {errors.url && <span className="text-red-500">{errors.url?.message as string}</span>}
       
@@ -132,8 +124,9 @@ export function LinksConfig() {
 
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-  // TODO: (Audit accessibility). There's no problem with using onClick on a div as long as a button
-  //       also exists (which can be accessed with the keyboard).
+  // TODO: Note, linting will tell me not to use onClick on a div, but this one is OK
+  //       since I have a button that can be clicked using the keyboard. Ignore the lint rule
+  //       for this code.
   return (
     <>
       {links.map((url, idx) => (
@@ -142,12 +135,12 @@ export function LinksConfig() {
             <EditLink url={url} onSubmit={update} onCancel={() => { setEditing(-1) }}/>
           ) : (
             <>
-              <div onClick={() => { setEditing(idx) }} className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4">
                 {(() => {
                   const Icon = urlToIcon(url)
                   return <Icon className="size-4"/>
                 })()}
-                <div className="grow">
+                <div className="grow" onClick={() => { setEditing(idx) }}>
                   {url}
                 </div>
                 <div>

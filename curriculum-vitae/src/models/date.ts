@@ -1,5 +1,3 @@
-// TODO: These types should be in the model, since they don't necessarily belong to any specific
-//       component.
 export interface YearMonthDate {
   year: number
   month: number

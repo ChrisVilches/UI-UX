@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { WorkHistory, compareWorkHistory, createWorkHistory } from "./models/work-history"
+import { WorkHistory, compareWorkHistory, createWorkHistory } from "../models/work-history"
 import { v4 } from "uuid"
 import { WorkHistoryCard } from "./work-history-card"
 import Modal from "./modal"

@@ -1,4 +1,4 @@
-import { YearMonthDate, compareYearMonthDate } from "./dates"
+import { YearMonthDate, compareYearMonthDate } from "./date"
 
 export interface WorkHistory {
   id?: string

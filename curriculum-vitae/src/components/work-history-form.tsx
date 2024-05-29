@@ -1,6 +1,6 @@
 import { FormEvent, MutableRefObject, useEffect, useRef, useState } from "react"
 import { YearMonthPicker } from "./year-month-picker"
-import { WorkHistory } from "./models/work-history"
+import { WorkHistory } from "../models/work-history"
 import { Field, Checkbox, Label } from "@headlessui/react"
 import { HiCheck } from "react-icons/hi";
 

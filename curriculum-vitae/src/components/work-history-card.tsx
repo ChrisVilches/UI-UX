@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
-import { YearMonthDate } from "./models/dates"
-import { WorkHistory } from "./models/work-history"
+import { YearMonthDate } from "../models/date"
+import { WorkHistory } from "../models/work-history"
 import { PiBuildingApartmentLight } from "react-icons/pi";
 import { IoBagOutline } from "react-icons/io5";
 import { MdChevronRight } from "react-icons/md";

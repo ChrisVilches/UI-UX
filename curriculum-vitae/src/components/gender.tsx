@@ -19,8 +19,6 @@ function Check() {
   )
 }
 
-// TODO: Add blue/pink/lbgtq++ colors
-
 interface Item {
   itemValue: GenderValues
   Component: IconType

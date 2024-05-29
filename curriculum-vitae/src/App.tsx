@@ -1,17 +1,15 @@
 import { useState } from 'react'
-import { MultipleComboboxLevel } from './multiple-combobox-level'
-import { skills } from './skills'
-import { languages } from './languages'
-import { countries } from './countries'
-import { ComboboxWithIcon, ComboboxWithIconItem } from './combobox'
-import { GenderSelect, GenderValues } from './gender'
-import { WorkHistoryConfig } from './work-history-config'
+import { MultipleComboboxLevel } from './components/multiple-combobox-level'
+import { skills } from './data/skills'
+import { languages } from './data/languages'
+import { countries } from './data/countries'
+import { ComboboxWithIcon, ComboboxWithIconItem } from './components/combobox'
+import { GenderSelect, GenderValues } from './components/gender'
+import { WorkHistoryConfig } from './components/work-history-config'
 import { useForm, useWatch } from "react-hook-form"
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LinksConfig } from './links-config'
-// TODO: Move components to /components folder.
-
+import { LinksConfig } from './components/links-config'
 // TODO: One good way to avoid the problem of nested forms is to have
 //       the resume builder divided in several steps, and each of them is a form.
 
@@ -41,7 +39,7 @@ function App() {
     }
   })
 
-  // TODO: Instead of useWatch, I could try using the "register" function, but that involves
+  // NOTE: Instead of useWatch, I could try using the "register" function, but that involves
   //       using forwardRef, also I'm not sure if Headless UI combobox would work with this.
   const nationality = useWatch({ control, name: 'nationality' })
 
@@ -49,13 +47,7 @@ function App() {
     console.log(data)
   }
 
-  // TODO: Maybe I can use react-forms (the library I always use with Zod)
-  //       for the personal info form, and the work history creation form individually.
-  //       Don't try to use it for the entire page!!!! That'd be a mess.
-
-  // TODO: For e-mail, put an email icon at the right. Make sure it works well with the labels.
-
-// TODO: When there are errors, the label thingy looks bad (looks out of place.)
+  // TODO: When there are errors, the label thingy looks bad (looks out of place.)
 
   return (
     <div className="container mx-auto lg:w-8/12 px-4">
