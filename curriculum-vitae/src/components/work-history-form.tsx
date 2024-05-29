@@ -30,7 +30,7 @@ const schema = z.object({
 export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFormProps): JSX.Element {
   const { trigger, handleSubmit, setValue, register, control, formState: { errors } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    mode: 'onTouched',
+    mode: 'all',
     defaultValues: {
       companyName: initialWorkHistory.companyName,
       role: initialWorkHistory.role,
