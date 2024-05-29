@@ -23,7 +23,7 @@ function sortWorkHistoriesDesc(list: WorkHistory[]) {
 }
 
 export function WorkHistoryConfig() {
-  const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>([createDummyWorkHistory(), createDummyWorkHistory()])
+  const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>([createDummyWorkHistory(), createDummyWorkHistory(), createDummyWorkHistory(), createDummyWorkHistory(), createDummyWorkHistory()])
 
   const [formWorkHistory, setFormWorkHistory] = useState<WorkHistory>(createWorkHistory())
   const [showModal, setShowModal] = useState(false)
@@ -55,8 +55,13 @@ export function WorkHistoryConfig() {
     setWorkHistoryList(l => l.filter(w => w.id !== id))
   }
   
+  // TODO: inlined background color. Should be CSS class.
   return (
     <>
+      <div className="sticky top-0 w-full mb-4 flex justify-center" style={{ backgroundColor: '#24242477' }}>
+        <button onClick={() => { openEditWorkHistory() }}>+</button>
+      </div>
+
       {workHistoryList.map(workHistory => (
         <div key={workHistory.id} className="mb-4">
           <WorkHistoryCard {...workHistory}>
@@ -65,15 +70,12 @@ export function WorkHistoryConfig() {
               <button onClick={() => { openEditWorkHistory(workHistory.id) }}>Edit</button>
             </div>
           </WorkHistoryCard>
-          {/* TODO: These buttons should go inside the card content */}
         </div>
       ))}
 
       <Modal show={showModal} onCloseModal={() => { setShowModal(false) }}>
         <WorkHistoryForm initialWorkHistory={formWorkHistory} onSubmit={saveWorkHistoryList}/>
       </Modal>
-
-      <button onClick={() => { openEditWorkHistory() }}>+</button>
     </>
   )
 }

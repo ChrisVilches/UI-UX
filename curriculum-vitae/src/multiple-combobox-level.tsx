@@ -2,6 +2,9 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headl
 import React, { useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 
+// TODO: It's better to split this component in two. They share the selections (managed by both
+//       components), but one is just the combobox and the other one is the level config.
+
 interface LevelSelectProps {
   value: number
   onChange: (s: number) => void
@@ -119,7 +122,7 @@ export function MultipleComboboxLevel({ emptyMessage, placeholder, list, levels,
 
       <ComboboxInput value={query} className="p-2" placeholder={placeholder} aria-label="Assignees" onChange={(event) => setQuery(event.target.value)} />
 
-      <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)]">
+      <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] z-50">
         {getFiltered().map((item) => (
           <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-blue-600 p-4 group flex gap-2 bg-slate-900">
             {item.name}

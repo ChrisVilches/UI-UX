@@ -1,6 +1,10 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
-import { MutableRefObject, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
+import { IoChevronDownOutline } from 'react-icons/io5'
+
+// TODO: Hopefully this input can also be used in React Forms. It should, since it's just an input
+//       with a value. Should be the same. I just have to pass the data from React Forms to here.
 
 interface Item {
   id: number
@@ -9,18 +13,14 @@ interface Item {
 }
 
 interface ComboboxWithIconProps {
-  buttonPlaceholder: string
-  searchPlaceholder: string
+  placeholder: string
   list: Item[]
   defaultIcon: ReactNode
 }
 
-const DEFAULT_ITEM = { id: -1, icon: '', name: '' }
-
-export function ComboboxWithIcon({ defaultIcon, buttonPlaceholder, searchPlaceholder, list }: ComboboxWithIconProps): JSX.Element {
-  const [selectedItem, setSelectedItem] = useState<Item>(DEFAULT_ITEM)
+export function ComboboxWithIcon({ defaultIcon, placeholder, list }: ComboboxWithIconProps): JSX.Element {
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [query, setQuery] = useState('')
-  const [showMenu, setShowMenu] = useState(false)
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['icon', 'name'], threshold: 0.3 }), [list])
 
@@ -32,50 +32,41 @@ export function ComboboxWithIcon({ defaultIcon, buttonPlaceholder, searchPlaceho
   }
 
    const comboboxChangeHandle = (data: Item | null) => {
-    setSelectedItem(data === null ? DEFAULT_ITEM : data)
+    setSelectedItem(data)
     setQuery('')
   }
 
   const onClose = () => {
     setQuery('')
-    setShowMenu(false)
   }
-
-  const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
-
-  const openMenu = () => {
-    setShowMenu(true)
-  }
-
-  useEffect(() => {
-    if (showMenu) {
-      inputRef.current?.focus()
-    }
-  }, [showMenu])
 
   return (
     <Combobox immediate value={selectedItem} onChange={comboboxChangeHandle} onClose={onClose}>
-      <div className="">
-        {showMenu || (
-          <button onClick={openMenu} onFocus={openMenu} className="w-full z-20 text-left">
-            {selectedItem.id !== -1 ? (
-              <span>{selectedItem.icon} {selectedItem.name}</span>
-            ) : (
-              <div>{defaultIcon}{buttonPlaceholder}</div>
-            )}
-          </button>
-        )}
-
+      <div className="relative">
+        <div className="pointer-events-none bg-opacity-25 w-full h-full top-0 left-0 absolute flex items-center px-3">
+          <div className="grow">
+            {selectedItem?.icon ?? defaultIcon}
+          </div>
+          <IoChevronDownOutline className="size-4 fill-white/60 group-data-[hover]:fill-white" />
+        </div>
         <ComboboxInput
-          ref={inputRef}
-          className={`p-2 w-full ${showMenu ? '' : 'hidden'}`}
+          className="p-2 w-full pl-10 cursor-default"
           displayValue={(item?: Item) => item?.name || ''}
-          placeholder={searchPlaceholder}
+          placeholder={placeholder}
           aria-label="Assignee"
           onChange={(event) => setQuery(event.target.value)} />
+
       </div>
 
-      <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] h-44">
+      {/* TODO: USE SOME OF THIS <div className="my-10">
+        {selectedItem.id !== -1 ? (
+          <span>{selectedItem.icon} {selectedItem.name}</span>
+        ) : (
+          <div>{defaultIcon}{buttonPlaceholder}</div>
+        )}
+      </div> */}
+
+      <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] h-44 z-50">
         {getFiltered().map((item) => (
           <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-blue-600 p-4 group flex gap-2 bg-slate-900">
             {item.icon} {item.name}

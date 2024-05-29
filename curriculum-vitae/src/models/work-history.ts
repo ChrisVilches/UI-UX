@@ -6,12 +6,17 @@ export interface WorkHistory {
   role: string
   description: string
   startDate: YearMonthDate
-  endDate: YearMonthDate
+  endDate?: YearMonthDate
 }
 
 // TODO: Unit test maybe.
+// TODO: This is weird. There should be an easier way to do this.
 export function compareWorkHistory(lhs: WorkHistory, rhs: WorkHistory) {
-  return compareYearMonthDate(lhs.startDate, rhs.startDate)
+  const cmp = compareYearMonthDate(lhs.startDate, rhs.startDate)
+  if (cmp === 0) {
+    return (lhs.id ?? '') < (rhs.id ?? '') ? 1 : -1
+  }
+  return cmp
 }
 
 export const createWorkHistory = (): WorkHistory => {

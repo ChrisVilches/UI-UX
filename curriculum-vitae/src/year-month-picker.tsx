@@ -9,6 +9,11 @@ interface YearMonthPickerProps {
   disabled?: boolean
 }
 
+// TODO: Maybe instead of a popover, click on the button and transform the dialog into the
+//       picker, with a transition. Put a button that says "cancel", and leave the button
+//       (start date or end date) in the same place, so that the user knows it's the left or right one.
+//       This is also because dialogs + popover looks bad on mobile, not sure if it can be fixed.
+
 export function YearMonthPicker({ value, onChange, disabled = false }: YearMonthPickerProps) {
   return (
     <Popover>

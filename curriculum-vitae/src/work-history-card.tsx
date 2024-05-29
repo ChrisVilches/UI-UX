@@ -3,7 +3,6 @@ import { YearMonthDate } from "./models/dates"
 import { WorkHistory } from "./models/work-history"
 import { PiBuildingApartmentLight } from "react-icons/pi";
 import { IoBagOutline } from "react-icons/io5";
-import { TbMessageCircle2 } from "react-icons/tb";
 import { MdChevronRight } from "react-icons/md";
 import { DateDisplay } from "./date-display";
 
@@ -11,7 +10,7 @@ type WorkHistoryCardProps = { children?: ReactNode } & WorkHistory
 
 interface DatesProps {
   startDate: YearMonthDate
-  endDate: YearMonthDate
+  endDate?: YearMonthDate
 }
 
 function Dates({ startDate, endDate }: DatesProps) {
@@ -19,7 +18,12 @@ function Dates({ startDate, endDate }: DatesProps) {
     <div className="text-sm">
       <DateDisplay {...startDate}/>
       <MdChevronRight className="inline mx-2"/>
-      <DateDisplay {...endDate}/>
+      
+      {typeof endDate === 'undefined' ? (
+        <span><i>Present</i></span>
+      ) : (
+        <DateDisplay {...endDate}/>
+      )}
     </div>
   )
 }
@@ -39,9 +43,12 @@ export function WorkHistoryCard({ startDate, endDate, companyName, role, descrip
         <span>{role}</span>
       </div>
       {description.trim().length > 0 && (
-        <div className="flex items-center space-x-4 mb-1">
-          <TbMessageCircle2/>
-          <span>{description}</span>
+        <div className="my-4 w-full flex justify-center">
+          <div className="sm:w-1/2 text-center text-sm italic">
+            {description.split('\n').filter(x => x.length > 0).map((txt, idx) => (
+              <p key={idx} className="mb-2">{txt}</p>
+            ))}
+          </div>
         </div>
       )}
       <div>

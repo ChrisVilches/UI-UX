@@ -27,7 +27,7 @@ export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFor
     role,
     description,
     startDate,
-    endDate
+    endDate: stillWork ? undefined : endDate
   })
 
   const submitHandle = (ev: FormEvent) => {
@@ -42,7 +42,7 @@ export function WorkHistoryForm({ initialWorkHistory, onSubmit }: WorkHistoryFor
     setRole(initialWorkHistory.role)
     setDescription(initialWorkHistory.description)
     setStartDate(initialWorkHistory.startDate)
-    setEndDate(initialWorkHistory.endDate)
+    setEndDate(initialWorkHistory.endDate ?? initialWorkHistory.startDate)
 
     // TODO: This opens the keyboard on mobile, which uses too much space.
     // inputRef.current?.focus()

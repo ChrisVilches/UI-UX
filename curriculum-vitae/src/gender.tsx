@@ -13,8 +13,8 @@ interface GenderSelectProps {
 
 function Check() {
   return (
-    <div className="bg-green-800 rounded-full w-8 h-8 flex items-center justify-center">
-      <FaCheck className="w-4 h-4"/>
+    <div className="bg-green-800 rounded-full size-8 flex items-center justify-center">
+      <FaCheck className="size-4"/>
     </div>
   )
 }
@@ -46,7 +46,7 @@ export function GenderSelect({ onChange, value }: GenderSelectProps) {
               {value === itemValue && <Check/>}
             </div>
             <div className="p-10">
-              <Component className="w-8 h-8"/>
+              <Component className="size-8"/>
             </div>
           </div>
         </button>
