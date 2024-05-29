@@ -3,15 +3,8 @@ import { type ReactNode, useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 import { IoChevronDownOutline } from 'react-icons/io5'
 
-// TODO: Error... choose a value, then click again on the input. THe dropdown should open again,
-//       but it doesn't.
-
 // TODO: Flags may not work in other devices. I think I just have to make sure the font is installed
 //       and used correctly.
-
-// TODO: Error (when using React Forms)... focus the element, then blur (by pressing tab),
-//       the error message doesn't appear, where it should. Just use forwardRef and shit
-//       or implement the event.
 
 export interface ComboboxWithIconItem {
   id: number
@@ -60,9 +53,12 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
           </div>
           <IoChevronDownOutline className="size-4 fill-white/60 group-data-[hover]:fill-white" />
         </div>
+
         <ComboboxInput
           className="p-2 w-full pl-10 cursor-default"
-          displayValue={(item: ComboboxWithIconItem): string => item?.name ?? ''}
+          displayValue={() => selected?.name ?? ''}
+          // NOTE: This doesn't work, sometimes the selected ID and shown name are not congruent.
+          // displayValue={(item: ComboboxWithIconItem): string => item?.name ?? ''}
           placeholder={placeholder}
           aria-label="Assignee"
           onBlur={onBlur}

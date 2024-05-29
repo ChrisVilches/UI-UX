@@ -5,7 +5,6 @@ import { WorkHistoryCard } from './work-history-card'
 import Modal from './modal'
 import { WorkHistoryForm } from './work-history-form'
 
-// TODO: The sort is fucked up.
 function sortWorkHistoriesDesc (list: WorkHistory[]): WorkHistory[] {
   const result = [...list]
   result.sort(compareWorkHistory)

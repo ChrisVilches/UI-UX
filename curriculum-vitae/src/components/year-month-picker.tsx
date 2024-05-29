@@ -9,11 +9,6 @@ interface YearMonthPickerProps {
   disabled?: boolean
 }
 
-// TODO: Maybe instead of a popover, click on the button and transform the dialog into the
-//       picker, with a transition. Put a button that says "cancel", and leave the button
-//       (start date or end date) in the same place, so that the user knows it's the left or right one.
-//       This is also because dialogs + popover looks bad on mobile, not sure if it can be fixed.
-
 export function YearMonthPicker ({ value, onChange, disabled = false }: YearMonthPickerProps): JSX.Element {
   return (
     <Popover>
@@ -31,7 +26,7 @@ export function YearMonthPicker ({ value, onChange, disabled = false }: YearMont
       >
         <PopoverPanel
           anchor="bottom"
-          className="z-50 divide-y divide-white/5 rounded-xl bg-white/5 text-sm/6 [--anchor-gap:var(--spacing-5)]"
+          className="z-50 w-full sm:w-auto divide-y divide-white/5 rounded-xl bg-white/5 text-sm/6 [--anchor-gap:var(--spacing-5)]"
         >
           {({ close }) => (
             <div className="p-8 z-50 bg-slate-500">

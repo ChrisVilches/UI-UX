@@ -1,6 +1,6 @@
 import { YearMonthPicker } from './year-month-picker'
 import { type WorkHistory } from '../models/work-history'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { TextInput } from './text-input'
@@ -28,7 +28,7 @@ const schema = z.object({
 })
 
 export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFormProps): JSX.Element {
-  const { trigger, handleSubmit, setValue, register, getValues, formState: { errors, isValid } } = useForm<z.infer<typeof schema>>({
+  const { trigger, handleSubmit, setValue, register, control, formState: { errors, isValid } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: {
@@ -55,9 +55,10 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
 
   const isNew = typeof initialWorkHistory.id === 'undefined'
 
-  // TODO: Shouldn't this be "useWatch"?? I think getValues doesn't guarantee the UI will
-  //       be re-rendered.
-  const dates = getValues('dates')
+  const dates = useWatch({
+    name: 'dates',
+    control
+  })
 
   return (
     <form onSubmit={(ev) => {
