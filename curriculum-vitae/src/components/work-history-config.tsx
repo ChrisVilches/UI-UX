@@ -47,13 +47,8 @@ export function WorkHistoryConfig ({ list, onChange }: WorkHistoryConfigProps): 
     onChange(list.filter(w => w.id !== id))
   }
 
-  // TODO: inlined background color. Should be CSS class.
   return (
     <>
-      <div className="sticky top-0 w-full mb-4 flex justify-center" style={{ backgroundColor: '#24242477' }}>
-        <button type="button" onClick={() => { openEditWorkHistory() }}>+</button>
-      </div>
-
       {list.map(workHistory => (
         <div key={workHistory.id} className="mb-4">
           <WorkHistoryCard {...workHistory}>
@@ -68,6 +63,9 @@ export function WorkHistoryConfig ({ list, onChange }: WorkHistoryConfigProps): 
       <Modal title="Tell us about your work experience" show={showModal} onCloseModal={() => { setShowModal(false) }}>
         <WorkHistoryForm initialWorkHistory={formWorkHistory} onSubmit={saveWorkHistoryList}/>
       </Modal>
+      <div className="sticky bottom-0 w-full mb-4 flex justify-end">
+        <button type="button" onClick={() => { openEditWorkHistory() }}>+</button>
+      </div>
     </>
   )
 }

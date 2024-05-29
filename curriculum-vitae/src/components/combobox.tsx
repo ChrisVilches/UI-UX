@@ -26,6 +26,9 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['icon', 'name'], threshold: 0.3 }), [list])
 
+  // NOTE: This is to avoid the "A component is changing from uncontrolled to controlled" error.
+  const emptyValue = { id: -1, icon: defaultIcon, name: '' }
+
   const getFiltered = (): ComboboxWithIconItem[] => {
     const text = query.trim().toLowerCase()
     if (text.length === 0) return list
@@ -42,7 +45,7 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
     setQuery('')
   }
 
-  const selected = list.find(item => value != null && item.id === value)
+  const selected = list.find(item => value != null && item.id === value) ?? emptyValue
 
   return (
     <Combobox immediate value={selected} onChange={comboboxChangeHandle} onClose={onClose}>
@@ -56,9 +59,10 @@ export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, lis
 
         <ComboboxInput
           className="p-2 w-full pl-10 cursor-default"
-          displayValue={() => selected?.name ?? ''}
+          // displayValue={() => selected?.name ?? ''}
           // NOTE: This doesn't work, sometimes the selected ID and shown name are not congruent.
-          // displayValue={(item: ComboboxWithIconItem): string => item?.name ?? ''}
+          // UPDATE: Seems to work now? Use the line commented out above if it doesn't.
+          displayValue={(item: ComboboxWithIconItem): string => item?.name ?? ''}
           placeholder={placeholder}
           aria-label="Assignee"
           onBlur={onBlur}

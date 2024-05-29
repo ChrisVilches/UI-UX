@@ -51,9 +51,19 @@ export const tryLoad = (): z.infer<typeof storageSchema> | null => {
   return null
 }
 
+// TODO: Stop using names like "try". Just use "save/load". Return
+//       a dummy default object if it can't be loaded. For saving, simply log the error message
+//       but don't tell the user it couldn't be saved.
+//       Also if I show a "finished, your resume is complete" screen, then let's not handle
+//       the case where the user has no localStorage enabled. That user has mental issues anyway.
 export const trySave = (data: unknown): boolean => {
   const res = storageSchema.partial().safeParse(data)
-  const current = tryLoad()
+  // TODO: This logic is broken beyond repair (unless you are a madlad programmer, then
+  //       you can fix it ;))
+  //       If you save one section, then it should be able to load that one only,
+  //       without being concerned if the other sections are or aren't stored.
+  //       but the current logic crashes if the data is only partially saved.
+  const current = tryLoad() ?? {}
   if (res.success && current !== null) {
     localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify({ ...current, ...res.data }))
     return true

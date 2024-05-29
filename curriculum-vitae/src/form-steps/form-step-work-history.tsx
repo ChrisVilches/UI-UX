@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { type WorkHistory } from '../models/work-history'
 import { tryLoad, trySave } from '../storage'
 import { WorkHistoryConfig } from '../components/work-history-config'
+import { FormDelay } from '../components/form-delay'
 
 interface FormStepWorkHistoryProps {
   onSuccess: () => void
@@ -25,12 +26,16 @@ export function FormStepWorkHistory ({ onSuccess }: FormStepWorkHistoryProps): J
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <div className="my-4">
-        <WorkHistoryConfig list={workHistoryList} onChange={setWorkHistoryList}/>
-      </div>
+    <FormDelay onSubmit={onSubmit}>
+      {(isSubmitting) => (
+        <>
+          <div className="my-4">
+            <WorkHistoryConfig list={workHistoryList} onChange={setWorkHistoryList}/>
+          </div>
 
-      <button type="submit" className="bg-green-700">Save</button>
-    </form>
+          <button type="submit" className="w-full sm:w-auto sticky bottom-0 bg-green-700">{isSubmitting ? 'Wait...' : 'Save'}</button>
+        </>
+      )}
+    </FormDelay>
   )
 }

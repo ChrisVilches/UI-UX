@@ -3,6 +3,7 @@ import { MultipleComboboxLevel, type MultipleComboboxLevelItem } from '../compon
 import { tryLoad, trySave } from '../storage'
 import { skills } from '../data/skills'
 import { languages } from '../data/languages'
+import { FormDelay } from '../components/form-delay'
 
 interface FormStepSkillsLanguagesProps {
   onSuccess: () => void
@@ -31,15 +32,19 @@ export function FormStepSkillsLanguages ({ onSuccess }: FormStepSkillsLanguagesP
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <div className="my-4">
-        <MultipleComboboxLevel selected={selectedSkills} onChange={setSelectedSkills} list={skills} defaultLevel={1} levels={['Beginner', 'Intermediate', 'Advanced']} placeholder="What are your skills?" emptyMessage="Please add skills"/>
-      </div>
-      <div className="my-4">
-        <MultipleComboboxLevel selected={selectedLanguages} onChange={setSelectedLanguages} list={languages} defaultLevel={2} levels={['Basic', 'Conversational', 'Business', 'Fluent', 'Native']} placeholder="Type language name" emptyMessage="Please add your languages"/>
-      </div>
+    <FormDelay onSubmit={onSubmit}>
+      {(isSubmitting) => (
+        <>
+          <div className="my-4">
+            <MultipleComboboxLevel selected={selectedSkills} onChange={setSelectedSkills} list={skills} defaultLevel={1} levels={['Beginner', 'Intermediate', 'Advanced']} placeholder="What are your skills?" emptyMessage="Please add skills"/>
+          </div>
+          <div className="my-4">
+            <MultipleComboboxLevel selected={selectedLanguages} onChange={setSelectedLanguages} list={languages} defaultLevel={2} levels={['Basic', 'Conversational', 'Business', 'Fluent', 'Native']} placeholder="Type language name" emptyMessage="Please add your languages"/>
+          </div>
 
-      <button type="submit" className="bg-green-700">Save</button>
-    </form>
+          <button type="submit" className="sticky bottom-0 bg-green-700">{isSubmitting ? 'Wait...' : 'Save'}</button>
+        </>
+      )}
+    </FormDelay>
   )
 }

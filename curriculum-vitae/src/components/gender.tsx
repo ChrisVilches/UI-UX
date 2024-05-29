@@ -7,10 +7,6 @@ export const genderValues = ['male', 'female', 'other'] as const
 
 export type GenderValue = typeof genderValues[number]
 
-// export function isGenderValue (s: unknown): s is GenderValues {
-//   return typeof s === 'string' && genderValues.includes(s as GenderValues)
-// }
-
 interface GenderSelectProps {
   onChange: (value: GenderValue) => void
   value: GenderValue
@@ -18,8 +14,8 @@ interface GenderSelectProps {
 
 function Check (): JSX.Element {
   return (
-    <div className="bg-green-800 rounded-full size-8 flex items-center justify-center">
-      <FaCheck className="size-4"/>
+    <div className="bg-green-800 rounded-full size-4 flex items-center justify-center">
+      <FaCheck className="size-2"/>
     </div>
   )
 }
@@ -45,10 +41,10 @@ export function GenderSelect ({ onChange, value }: GenderSelectProps): JSX.Eleme
       {items.map(({ itemValue, Component, selectedClass }, idx) => (
         <button type="button" key={idx} className={`${baseClass} ${value === itemValue ? selectedClass : nonSelected}`} onClick={() => { onChange(itemValue) }}>
           <div>
-            <div className="m-2 absolute">
+            <div className="m-1 absolute">
               {value === itemValue && <Check/>}
             </div>
-            <div className="p-10">
+            <div className="p-4">
               <Component className="size-8"/>
             </div>
           </div>
