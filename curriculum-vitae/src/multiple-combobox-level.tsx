@@ -1,0 +1,131 @@
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
+import React, { useMemo, useState } from 'react'
+import Fuse from 'fuse.js'
+
+interface LevelSelectProps {
+  value: number
+  onChange: (s: number) => void
+  levels: string[]
+}
+
+function LevelSelect({ value, onChange, levels }: LevelSelectProps) {
+  const selected = 'bg-slate-800'
+  const nonSelected = 'bg-transparent text-slate-500'
+  return (
+    <>
+      {levels.map((level, idx) => (
+        <button key={idx} onClick={() => onChange(idx)} className={value === idx ? selected : nonSelected}>
+          {level}
+        </button>
+      ))}
+    </>
+  )
+}
+
+interface Item {
+  id: string
+  name: string
+}
+
+interface MultipleComboboxLevelProps {
+  emptyMessage: string
+  placeholder: string
+  list: Item[]
+  levels: string[]
+  defaultLevel: number
+}
+
+export function MultipleComboboxLevel({ emptyMessage, placeholder, list, levels, defaultLevel }: MultipleComboboxLevelProps): JSX.Element {
+  const [selectedItems, setSelectedItems] = useState<Item[]>([])
+  const [query, setQuery] = useState('')
+  const [itemsLevel, setItemsLevel] = useState<Record<string, number>>({})
+
+  const fuse = useMemo(() => new Fuse(list, { keys: ['name'], threshold: 0.3 }), [list])
+
+  const getFiltered = () => {
+    const text = query.trim().toLowerCase()
+    if (text.length === 0) return []
+    
+    // This is to avoid showing already selected options.
+    const selected = new Set([...selectedItems.map(s => s.name)])
+
+    const result = fuse.search(text).map(res => res.item) //list.filter(({ name }) => name.toLowerCase().includes(text))
+                       .filter(({ name }) => !selected.has(name))
+
+    // This is to add the free input at the end IF it's not in the suggestion list
+    if (result.map(s => s.name.trim().toLowerCase()).indexOf(text) === -1) {
+      result.push({ id: query, name: query })
+    }
+
+    return result
+  }
+
+  const changeLevel = (id: string, value: number) => {
+    setItemsLevel(l => ({
+      ...l,
+      [id]: value
+    }))
+  }
+
+  const remove = (id: string) => {
+    setSelectedItems(items => items.filter(s => s.id !== id))
+    setItemsLevel(l => {
+      const result = {...l}
+      delete result[id]
+      return result
+    })
+  }
+
+  const comboboxChangeHandle = (data: Item[]) => {
+    setSelectedItems(data)
+    for (const { id } of data) {
+      if (!(id in itemsLevel)) {
+        setItemsLevel(l => ({ ...l, [id]: defaultLevel }))
+      }
+    }
+
+    setQuery('')
+  }
+
+  // TODO: <input value={null}...> makes it uncontrolled. Make sure it has a default value.
+  return (
+    <Combobox multiple value={selectedItems} onChange={comboboxChangeHandle} onClose={() => setQuery('')}>
+      {selectedItems.length > 0 && (
+        <div className="mb-4 grid grid-cols-10">
+          {selectedItems.map(({ id, name }) => (
+            <React.Fragment key={id}>
+              <div className="col-span-2">
+                {name}
+              </div>
+              <div className="col-span-6">
+                <LevelSelect value={itemsLevel[id]} levels={levels} onChange={(value) => changeLevel(id, value)}/>
+              </div>
+              <button
+                onClick={() => { remove(id) }}
+                className="col-span-2 block rounded-md p-2 bg-slate-700 hover:bg-red-500 transition-colors duration-300 text-xs mr-2"
+              >
+                x
+              </button>
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+
+      {selectedItems.length === 0 && (
+        <div className="p-8 my-10 rounded-md bg-slate-700">
+          {emptyMessage}
+        </div>
+      )}
+
+      <ComboboxInput value={query} className="p-2" placeholder={placeholder} aria-label="Assignees" onChange={(event) => setQuery(event.target.value)} />
+
+      <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)]">
+        {getFiltered().map((item) => (
+          <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-blue-600 p-4 group flex gap-2 bg-slate-900">
+            {item.name}
+          </ComboboxOption>
+        ))}
+      </ComboboxOptions>
+    </Combobox>
+  )
+}
