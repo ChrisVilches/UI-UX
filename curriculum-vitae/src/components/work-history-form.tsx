@@ -1,4 +1,4 @@
-import { type FormEvent, type MutableRefObject, useEffect, useRef, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { YearMonthPicker } from './year-month-picker'
 import { type WorkHistory } from '../models/work-history'
 import { Field, Checkbox, Label } from '@headlessui/react'
@@ -9,7 +9,7 @@ interface WorkHistoryFormProps {
   onSubmit: (data: WorkHistory) => void
 }
 
-// TODO: Use React Forms here.
+// TODO: Use React Forms here. And use TextInput
 export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFormProps): JSX.Element {
   const [companyName, setCompanyName] = useState('')
   const [role, setRole] = useState('')
@@ -33,17 +33,14 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
     onSubmit(getData())
   }
 
-  const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
-
   useEffect(() => {
     setCompanyName(initialWorkHistory.companyName)
     setRole(initialWorkHistory.role)
     setDescription(initialWorkHistory.description)
     setStartDate(initialWorkHistory.startDate)
     setEndDate(initialWorkHistory.endDate ?? initialWorkHistory.startDate)
-
-    // TODO: This opens the keyboard on mobile, which uses too much space.
-    // inputRef.current?.focus()
+    // TODO: This is bugged. The first edition doesn't work when checking the checkbox.
+    setStillWork(typeof initialWorkHistory.endDate === 'undefined')
   }, [initialWorkHistory])
 
   const isNew = typeof initialWorkHistory.id === 'undefined'
@@ -76,7 +73,7 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
       </div>
 
       <div className="relative mb-4">
-        <input id="company-name" type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" ref={inputRef} value={companyName} onChange={(ev) => { setCompanyName(ev.target.value) }} placeholder=""/>
+        <input id="company-name" type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" value={companyName} onChange={(ev) => { setCompanyName(ev.target.value) }} placeholder=""/>
         <label htmlFor="company-name" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Company name</label>
       </div>
 

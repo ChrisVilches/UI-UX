@@ -12,6 +12,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LinksConfig } from './components/links-config'
+import { TextInput } from './components/text-input'
 // TODO: One good way to avoid the problem of nested forms is to have
 //       the resume builder divided in several steps, and each of them is a form.
 
@@ -56,18 +57,10 @@ function App (): JSX.Element {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="my-4">
           <div className="relative mb-4">
-            <input id="full-name" {...register('fullName', { required: true, minLength: 2 })} type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
-            <label htmlFor="full-name" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
-              Full name
-            </label>
-            {(errors.fullName != null) && <span className="text-red-500">{errors.fullName.message}</span>}
+            <TextInput errorMessage={errors.fullName?.message} label="Full name" id="full-name" {...register('fullName', { required: true, minLength: 2 })}/>
           </div>
-          <div className="relative mb-4">
-            <input id="email" {...register('email', { required: true, minLength: 2 })} type="text" className="block px-2.5 pb-2.5 pt-4 w-full text-sm bg-transparent rounded-lg border-[1px] border-gray-300 appearance-none text-white focus:outline-none focus:ring-0 focus:border-blue-200 peer" placeholder=""/>
-            <label htmlFor="email" className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-slate-800 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">
-              E-mail
-            </label>
-            {(errors.email != null) && <span className="text-red-500">{errors.email.message}</span>}
+          <div className="mb-4">
+            <TextInput errorMessage={errors.email?.message} label="E-mail" id="email" {...register('email', { required: true, minLength: 2 })}/>
           </div>
           <div className="mb-4 flex justify-center">
             <GenderSelect value={gender} onChange={setGender}/>

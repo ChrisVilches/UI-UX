@@ -67,14 +67,14 @@ export function WorkHistoryConfig (): JSX.Element {
         <div key={workHistory.id} className="mb-4">
           <WorkHistoryCard {...workHistory}>
             <div className="flex justify-end">
-              <button onClick={() => { remove(workHistory.id ?? '') }}>Remove</button>
-              <button onClick={() => { openEditWorkHistory(workHistory.id) }}>Edit</button>
+              <button type="button" onClick={() => { remove(workHistory.id ?? '') }}>Remove</button>
+              <button type="button" onClick={() => { openEditWorkHistory(workHistory.id) }}>Edit</button>
             </div>
           </WorkHistoryCard>
         </div>
       ))}
 
-      <Modal show={showModal} onCloseModal={() => { setShowModal(false) }}>
+      <Modal title="Tell us about your work experience" show={showModal} onCloseModal={() => { setShowModal(false) }}>
         <WorkHistoryForm initialWorkHistory={formWorkHistory} onSubmit={saveWorkHistoryList}/>
       </Modal>
     </>

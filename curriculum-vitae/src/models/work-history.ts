@@ -9,12 +9,13 @@ export interface WorkHistory {
   endDate?: YearMonthDate
 }
 
-// TODO: Unit test maybe.
-// TODO: This is weird. There should be an easier way to do this.
 export function compareWorkHistory (lhs: WorkHistory, rhs: WorkHistory): number {
   const cmp = compareYearMonthDate(lhs.startDate, rhs.startDate)
   if (cmp === 0) {
-    return (lhs.id ?? '') < (rhs.id ?? '') ? 1 : -1
+    if (typeof lhs.id !== 'undefined' && typeof rhs.id !== 'undefined') {
+      return lhs.id.localeCompare(rhs.id)
+    }
+    return lhs.companyName.localeCompare(rhs.companyName)
   }
   return cmp
 }

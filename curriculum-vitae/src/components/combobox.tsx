@@ -3,11 +3,15 @@ import { type ReactNode, useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 import { IoChevronDownOutline } from 'react-icons/io5'
 
-// TODO: Hopefully this input can also be used in React Forms. It should, since it's just an input
-//       with a value. Should be the same. I just have to pass the data from React Forms to here.
-
 // TODO: Error... choose a value, then click again on the input. THe dropdown should open again,
 //       but it doesn't.
+
+// TODO: Flags may not work in other devices. I think I just have to make sure the font is installed
+//       and used correctly.
+
+// TODO: Error (when using React Forms)... focus the element, then blur (by pressing tab),
+//       the error message doesn't appear, where it should. Just use forwardRef and shit
+//       or implement the event.
 
 export interface ComboboxWithIconItem {
   id: number
@@ -21,10 +25,10 @@ interface ComboboxWithIconProps {
   defaultIcon: ReactNode
   value: ComboboxWithIconItem | null
   onChange: (item: ComboboxWithIconItem | null) => void
+  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
 }
 
-export function ComboboxWithIcon ({ value, defaultIcon, placeholder, list, onChange }: ComboboxWithIconProps): JSX.Element {
-  // const [selectedItem, setSelectedItem] = useState<ComboboxWithIconItem | null>(null)
+export function ComboboxWithIcon ({ onBlur, value, defaultIcon, placeholder, list, onChange }: ComboboxWithIconProps): JSX.Element {
   const [query, setQuery] = useState('')
 
   const fuse = useMemo(() => new Fuse(list, { keys: ['icon', 'name'], threshold: 0.3 }), [list])
@@ -37,8 +41,6 @@ export function ComboboxWithIcon ({ value, defaultIcon, placeholder, list, onCha
   }
 
   const comboboxChangeHandle = (data: ComboboxWithIconItem | null): void => {
-    // TODO: This one shouldn't be necessary if value comes from parent.
-    // setSelectedItem(data)
     setQuery('')
     onChange(data)
   }
@@ -61,6 +63,7 @@ export function ComboboxWithIcon ({ value, defaultIcon, placeholder, list, onCha
           displayValue={(item?: ComboboxWithIconItem): string => item?.name ?? ''}
           placeholder={placeholder}
           aria-label="Assignee"
+          onBlur={onBlur}
           onChange={(event) => { setQuery(event.target.value) }} />
       </div>
 

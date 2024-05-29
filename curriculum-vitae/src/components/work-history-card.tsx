@@ -40,10 +40,12 @@ export function WorkHistoryCard ({ startDate, endDate, companyName, role, descri
         <PiBuildingApartmentLight/>
         <span>{companyName}</span>
       </div>
-      <div className="flex items-center space-x-4 mb-1">
-        <IoBagOutline/>
-        <span>{role}</span>
-      </div>
+      {role.length > 0 && (
+        <div className="flex items-center space-x-4 mb-1">
+          <IoBagOutline/>
+          <span>{role}</span>
+        </div>
+      )}
       {description.trim().length > 0 && (
         <div className="my-4 w-full flex justify-center">
           <div className="sm:w-1/2 text-center text-sm italic">

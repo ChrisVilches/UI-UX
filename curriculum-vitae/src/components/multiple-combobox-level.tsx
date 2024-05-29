@@ -96,7 +96,6 @@ export function MultipleComboboxLevel ({ emptyMessage, placeholder, list, levels
     setQuery('')
   }
 
-  // TODO: <input value={null}...> makes it uncontrolled. Make sure it has a default value.
   return (
     <Combobox multiple value={selectedItems} onChange={comboboxChangeHandle} onClose={() => { setQuery('') }}>
       {selectedItems.length > 0 && (

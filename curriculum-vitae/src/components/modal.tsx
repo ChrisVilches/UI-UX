@@ -5,9 +5,10 @@ interface ModalProps {
   show: boolean
   onCloseModal: () => void
   children: ReactNode
+  title: string
 }
 
-export default function Modal ({ show, onCloseModal, children }: ModalProps): JSX.Element {
+export default function Modal ({ show, onCloseModal, children, title }: ModalProps): JSX.Element {
   return (
     <Transition appear show={show}>
       <Dialog as="div" className="relative z-10 focus:outline-none" onClose={onCloseModal}>
@@ -23,8 +24,7 @@ export default function Modal ({ show, onCloseModal, children }: ModalProps): JS
             >
               <DialogPanel className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl">
                 <DialogTitle as="h3" className="text-base/7 font-medium text-white">
-                  {/* TODO: This title should be a prop */}
-                  Tell us about your work experience
+                  {title}
                 </DialogTitle>
                 {children}
               </DialogPanel>
