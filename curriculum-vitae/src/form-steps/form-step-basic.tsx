@@ -35,12 +35,6 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
       if (data?.nationality != null) setValue('nationality', data.nationality)
     }
     setData().catch(console.error)
-
-    // TODO: If it could be loaded, it means it could be saved, therefore it's complete.
-    //       So there's no problem putting this line here.
-    // TODO: But why did I put it here if there aren't going to be any errors anyway?
-    //       Probably not needed anymore? Remove.
-    // trigger().catch(console.error)
   }, [setValue])
 
   const onSubmit = async (data: z.infer<typeof schema>): Promise<void> => {
