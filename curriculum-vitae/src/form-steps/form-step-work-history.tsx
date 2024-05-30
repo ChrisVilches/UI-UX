@@ -1,29 +1,33 @@
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { type WorkHistory } from '../models/work-history'
 import { load, save } from '../storage'
 import { WorkHistoryConfig } from '../components/work-history-config'
 import { type FormStepProps } from './form-step-wrapped'
 import { Form } from '../components/form'
-import { sleep } from '../util'
 
 export function FormStepWorkHistory ({ onSuccess }: FormStepProps): JSX.Element {
   const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    const data = load({ select: ['workHistory'] })
-    if (data === null) return
-    setWorkHistoryList(data.workHistory ?? [])
+    const setData = async (): Promise<void> => {
+      const data = await load()
+      setWorkHistoryList(data?.workHistory ?? [])
+    }
+    setData().catch(console.error)
   }, [])
 
-  const onSubmit = async (ev: FormEvent): Promise<void> => {
+  const onSubmit = (ev: FormEvent): void => {
     ev.preventDefault()
     ev.stopPropagation()
-    setIsSubmitting(true)
-    await sleep(1000)
-    save({ workHistory: workHistoryList })
-    setIsSubmitting(false)
-    onSuccess()
+
+    const fn = async (): Promise<void> => {
+      setIsSubmitting(true)
+      await save({ workHistory: workHistoryList })
+      setIsSubmitting(false)
+      onSuccess()
+    }
+    fn().catch(console.error)
   }
 
   return (
@@ -33,7 +37,7 @@ export function FormStepWorkHistory ({ onSuccess }: FormStepProps): JSX.Element 
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <button disabled={isSubmitting} type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
       </div>
     </Form>
   )

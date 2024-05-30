@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 import { useEffect } from 'react'
 import { MultipleComboboxLevel } from '../components/multiple-combobox-level'
 import { load, save } from '../storage'
@@ -11,7 +9,6 @@ import { z } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { itemWithLevelSchema } from '../schemas/item-with-level'
-import { sleep } from '../util'
 
 const schema = z.object({
   skills: itemWithLevelSchema.array(),
@@ -29,16 +26,16 @@ export function FormStepSkillsLanguages ({ onSuccess }: FormStepProps): JSX.Elem
   })
 
   useEffect(() => {
-    const data = load({ select: ['languages', 'skills'] })
-    if (data === null) return
-
-    if (data.skills != null) setValue('skills', data.skills)
-    if (data.languages != null) setValue('languages', data.languages)
+    const setData = async (): Promise<void> => {
+      const data = await load()
+      if (data?.skills != null) setValue('skills', data.skills)
+      if (data?.languages != null) setValue('languages', data.languages)
+    }
+    setData().catch(console.error)
   }, [setValue])
 
   const onSubmit = async (data: z.infer<typeof schema>): Promise<void> => {
-    await sleep(1000)
-    save(data)
+    await save(data)
     onSuccess()
   }
 
@@ -62,7 +59,7 @@ export function FormStepSkillsLanguages ({ onSuccess }: FormStepProps): JSX.Elem
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <button disabled={isSubmitting} type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
       </div>
     </Form>
   )

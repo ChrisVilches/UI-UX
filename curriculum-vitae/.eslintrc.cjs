@@ -26,6 +26,7 @@ module.exports = {
   rules: {
     'react/jsx-indent': ['warn', 2],
     '@typescript-eslint/triple-slash-reference': 'off',
+    '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { attributes: false } }],
     'react/react-in-jsx-scope': 'off'
   },
   settings: {

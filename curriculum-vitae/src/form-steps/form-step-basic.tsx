@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 import { z } from 'zod'
 import { countrySchema } from '../schemas/country'
 import { Controller, useForm } from 'react-hook-form'
@@ -11,7 +9,6 @@ import { TextInput } from '../components/text-input'
 import { ComboboxWithIcon } from '../components/combobox'
 import { countries } from '../data/countries'
 import { type FormStepProps } from './form-step-wrapped'
-import { sleep } from '../util'
 import { Form } from '../components/form'
 
 const schema = z.object({
@@ -30,15 +27,16 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
   })
 
   useEffect(() => {
-    const data = load({ select: ['fullName', 'email', 'gender', 'nationality'] })
-    if (data === null) return
+    const setData = async (): Promise<void> => {
+      const data = await load()
+      if (data?.fullName != null) setValue('fullName', data.fullName)
+      if (data?.email != null) setValue('email', data.email)
+      if (data?.gender != null) setGender(data.gender)
+      if (data?.nationality != null) setValue('nationality', data.nationality)
+    }
+    setData().catch(console.error)
 
-    if (data.fullName != null) setValue('fullName', data.fullName)
-    if (data.email != null) setValue('email', data.email)
-    if (data.gender != null) setGender(data.gender)
-    if (data.nationality != null) setValue('nationality', data.nationality)
-
-    // NOTE: If it could be loaded, it means it could be saved, therefore it's complete.
+    // TODO: If it could be loaded, it means it could be saved, therefore it's complete.
     //       So there's no problem putting this line here.
     // TODO: But why did I put it here if there aren't going to be any errors anyway?
     //       Probably not needed anymore? Remove.
@@ -46,8 +44,7 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
   }, [setValue])
 
   const onSubmit = async (data: z.infer<typeof schema>): Promise<void> => {
-    await sleep(1000)
-    save({ ...data, gender })
+    await save({ ...data, gender })
     onSuccess()
   }
 
@@ -84,7 +81,7 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <button disabled={isSubmitting} type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
       </div>
     </Form>
   )

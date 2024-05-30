@@ -3,9 +3,14 @@ import { countrySchema } from './schemas/country'
 import { genderSchema } from './schemas/gender'
 import { dateSchema } from './schemas/date'
 import { itemWithLevelSchema } from './schemas/item-with-level'
-import { pick } from 'lodash'
+import { openDB } from 'idb'
+import { sleep } from './util'
 
-const LOCALSTORAGE_KEY = 'ui-ux-cv-data'
+const db = openDB('db', 1, {
+  upgrade (db) {
+    db.createObjectStore('cvs')
+  }
+})
 
 const storageSchema = z.object({
   fullName: z.string(),
@@ -29,55 +34,28 @@ const storageSchema = z.object({
 const storagePartialSchema = storageSchema.partial()
 type StoragePartial = z.infer<typeof storagePartialSchema>
 
-function pickOrNull<T = Record<string, unknown>> (obj: T, keys: Array<keyof T>): Partial<T> | null {
-  if (keys == null || keys.length === 0) return obj
-
-  const filtered = pick(obj, keys)
-  if (Object.keys(filtered).length > 0) {
-    return filtered
-  }
-
-  return null
-}
-
-interface LoadArgs {
-  select?: Array<keyof StoragePartial>
-}
-
-export function load ({ select = [] }: LoadArgs = {}): StoragePartial | null {
-  try {
-    const data = localStorage.getItem(LOCALSTORAGE_KEY)
-
-    if (data === null) {
-      console.log('No data in localStorage')
-      return null
-    }
-
-    const res = storagePartialSchema.safeParse(JSON.parse(data))
-    if (res.success) {
-      return pickOrNull(res.data, select)
-    } else {
-      console.error("Couldn't load data from storage")
-      console.error(res)
-      console.error(res.error.message)
-    }
-  } catch (e: unknown) {
-    console.error(e)
-  }
-
-  return null
-}
-
-export const save = (data: unknown): boolean => {
+export async function load (): Promise<StoragePartial | null> {
+  const data = await (await db).get('cvs', 'main-user')
   const res = storagePartialSchema.safeParse(data)
-  const current = load() ?? {}
-
-  if (res.success && current !== null) {
-    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify({ ...current, ...res.data }))
-    return true
+  if (res.success) {
+    return res.data
   } else {
-    console.error("Couldn't save data")
+    console.error("Couldn't parse data")
     console.error(res)
-    return false
+  }
+
+  return null
+}
+
+export const save = async (data: unknown): Promise<void> => {
+  const res = storagePartialSchema.safeParse(data)
+
+  if (res.success) {
+    await sleep(1000)
+    const current = (await load()) ?? {}
+    await (await db).put('cvs', { ...current, ...res.data }, 'main-user')
+  } else {
+    console.error("Couldn't parse data")
+    console.error(res)
   }
 }

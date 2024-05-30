@@ -3,23 +3,33 @@ import { LinksConfig } from '../components/links-config'
 import { load, save } from '../storage'
 import { type FormStepProps } from './form-step-wrapped'
 import { Alert } from '../components/alert'
+import { Form } from '../components/form'
 
 export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
   const [about, setAbout] = useState('')
   const [linkList, setLinkList] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    const data = load({ select: ['about', 'links'] })
-    if (data === null) return
-    setAbout(data.about ?? '')
-    setLinkList(data.links ?? [])
+    const setData = async (): Promise<void> => {
+      const data = await load()
+      setAbout(data?.about ?? '')
+      setLinkList(data?.links ?? [])
+    }
+    setData().catch(console.error)
   }, [])
 
   const onSubmit = (ev: FormEvent): void => {
     ev.preventDefault()
     ev.stopPropagation()
-    save({ about, links: linkList })
-    onSuccess()
+
+    const fn = async (): Promise<void> => {
+      setIsSubmitting(true)
+      await save({ about, links: linkList })
+      onSuccess()
+      setIsSubmitting(false)
+    }
+    fn().catch(console.error)
   }
 
   // NOTE: This is the only step that doesn't have Form, because the button is outside the
@@ -27,7 +37,7 @@ export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
   return (
     <div className="">
       <div className="grow">
-        <form onSubmit={onSubmit} id="form">
+        <Form onSubmit={onSubmit} id="form" isSubmitting={isSubmitting}>
           <div className="my-4">
             {about.trim().length === 0 && <Alert className="mb-8" variant="warn">Please tell us a bit more about yourself</Alert>}
             <div className="relative mb-4">
@@ -37,7 +47,7 @@ export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
               </label>
             </div>
           </div>
-        </form>
+        </Form>
 
         <div className="my-8">
           <h2 className="font-bold">Links</h2>
@@ -47,7 +57,7 @@ export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button type="submit" form="form" className='w-full md:w-auto p-4 rounded-md bg-green-700'>Save</button>
+        <button disabled={isSubmitting} form="form" type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
       </div>
     </div>
   )
