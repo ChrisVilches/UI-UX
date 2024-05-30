@@ -87,8 +87,6 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
                 onBlur={onBlur}
                 checked={value.stillWorking}
                 onChange={(ev) => {
-                  // TODO: Note, the object keys are not typesafe. I can type "stillWorkkking" and
-                  //       it would work.
                   onChange({ ...value, stillWorking: ev.target.checked })
                 }}
                 id="still-working"

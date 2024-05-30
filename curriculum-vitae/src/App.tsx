@@ -32,8 +32,6 @@ function App (): JSX.Element {
     initial: 'initialState',
     animate: 'animateState',
     exit: 'exitState',
-    // TODO: A bit glitchy when the user reloads the page but the forward state is kept,
-    //       therefore there's some transition but it glitches.
     transition: { type: 'tween', duration: 0.2 },
     variants: {
       initialState: (x: [number, number]) => ({ opacity: 0, x: x[0] }),
@@ -42,8 +40,6 @@ function App (): JSX.Element {
     },
     custom: direction
   }
-
-  // TODO: Disable transitions when the page is the same.
 
   const MenuItem = ({ Icon, active }: { Icon: IconType, active: boolean }): JSX.Element => {
     return (

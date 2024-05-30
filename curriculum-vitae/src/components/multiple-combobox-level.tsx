@@ -4,14 +4,6 @@ import Fuse from 'fuse.js'
 import { IoTrashOutline } from 'react-icons/io5'
 import { Alert } from './alert'
 
-// TODO: It's better to split this component in two. They share the selections (managed by both
-//       components), but one is just the combobox and the other one is the level config.
-
-// TODO: When adding one by pressing enter, it doesn't blur out of the input. That's great if I want
-//       to continue typing and adding a new one, but if you consider the first time the user opens
-//       the dropdown, the input is first focused but without the scrolls removed (nor the dropdown opened)
-//       I think that's the desired state for after the addition of an item.
-
 interface LevelSelectProps {
   value: number
   onChange: (s: number) => void
@@ -126,7 +118,15 @@ export const MultipleComboboxLevel = forwardRef((props: MultipleComboboxLevelPro
 
       {selected.length === 0 && <Alert className="mb-10" variant="warn">{emptyMessage}</Alert>}
 
-      <ComboboxInput onBlur={onBlur} ref={ref} value={query} className="p-2" placeholder={placeholder} aria-label="Assignees" onChange={(event) => { setQuery(event.target.value) }} />
+      <ComboboxInput
+        onBlur={onBlur}
+        ref={ref}
+        value={query}
+        className="p-2"
+        placeholder={placeholder}
+        aria-label="Assignees"
+        autoComplete="off"
+        onChange={(event) => { setQuery(event.target.value) }} />
 
       <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] z-50">
         {getFiltered().map((item) => (

@@ -68,6 +68,7 @@ export const ComboboxWithIcon = forwardRef((props: ComboboxWithIconProps, ref: F
           placeholder={placeholder}
           aria-label="Assignee"
           onBlur={onBlur}
+          autoComplete="off"
           onChange={(event) => { setQuery(event.target.value) }} />
       </div>
 

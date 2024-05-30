@@ -10,8 +10,9 @@ import { load, save } from '../storage'
 import { TextInput } from '../components/text-input'
 import { ComboboxWithIcon } from '../components/combobox'
 import { countries } from '../data/countries'
-import { FormDelay } from '../components/form-delay'
 import { type FormStepProps } from './form-step-wrapped'
+import { sleep } from '../util'
+import { Form } from '../components/form'
 
 const schema = z.object({
   fullName: z.string().min(2, 'Enter your name'),
@@ -21,8 +22,10 @@ const schema = z.object({
 
 export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
   const [gender, setGender] = useState<GenderValue>(genderValues[0])
-  const { register, handleSubmit, setValue, control, formState: { errors, isValid } } = useForm<z.infer<typeof schema>>({
+  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
+    // NOTE: This is to avoid showing error messages while the user is typing the E-mail, but it's still not valid (i.e. hasn'typed
+    //       the @hostname.com yet).
     mode: 'onTouched'
   })
 
@@ -42,51 +45,47 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
     // trigger().catch(console.error)
   }, [setValue])
 
-  const onSubmit = (data: z.infer<typeof schema>): void => {
-    if (save({ ...data, gender })) {
-      onSuccess()
-    }
+  const onSubmit = async (data: z.infer<typeof schema>): Promise<void> => {
+    await sleep(1000)
+    save({ ...data, gender })
+    onSuccess()
   }
 
   return (
-    <FormDelay immediate={!isValid} onSubmit={handleSubmit(onSubmit)}>
-      {(isSubmitting) => (
-        <>
-          <div className="my-4">
-            <div className="relative mb-4">
-              <TextInput errorMessage={errors.fullName?.message} label="Full name" id="full-name" {...register('fullName')}/>
-            </div>
-            <div className="mb-4">
-              <TextInput errorMessage={errors.email?.message} label="E-mail" id="email" {...register('email')}/>
-            </div>
-            <div className="mb-4 flex justify-center">
-              <GenderSelect value={gender} onChange={setGender}/>
-            </div>
-            <div className="mb-4 w-full">
-              {/* NOTE: This is necessary to make it controlled. The uncontrolled version
-              gets the input display changed, ignoring the 'displayValue'. Remember that register()
-              doesn't include the 'value' prop */}
-              <Controller control={control} name="nationality" render={({ field: { onChange, onBlur, value, ref } }) => (
-                <>
-                  <ComboboxWithIcon
-                    value={value}
-                    ref={ref}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    defaultIcon={<span>🌍</span>}
-                    list={countries}
-                    placeholder="Select your nationality"/>
-                  {(errors.nationality != null) && <span className="text-red-500">{errors.nationality.message}</span>}
-                </>
-              )}/>
-            </div>
-          </div>
+    <Form isSubmitting={isSubmitting} onSubmit={handleSubmit(onSubmit)}>
+      <div className="my-4">
+        <div className="relative mb-4">
+          <TextInput errorMessage={errors.fullName?.message} label="Full name" id="full-name" {...register('fullName')}/>
+        </div>
+        <div className="mb-4">
+          <TextInput errorMessage={errors.email?.message} label="E-mail" id="email" {...register('email')}/>
+        </div>
+        <div className="mb-4 flex justify-center">
+          <GenderSelect value={gender} onChange={setGender}/>
+        </div>
+        <div className="mb-4 w-full">
+          {/* NOTE: This is necessary to make it controlled. The uncontrolled version
+          gets the input display changed, ignoring the 'displayValue'. Remember that register()
+          doesn't include the 'value' prop */}
+          <Controller control={control} name="nationality" render={({ field: { onChange, onBlur, value, ref } }) => (
+            <>
+              <ComboboxWithIcon
+                value={value}
+                ref={ref}
+                onChange={onChange}
+                onBlur={onBlur}
+                defaultIcon={<span>🌍</span>}
+                list={countries}
+                placeholder="Select your nationality"/>
+              {(errors.nationality != null) && <span className="text-red-500">{errors.nationality.message}</span>}
+            </>
+          )}/>
+        </div>
+      </div>
 
-          <div className="flex justify-end sticky bottom-0">
-            <button type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
-          </div>
-        </>
-      )}
-    </FormDelay>
+      <div className="flex justify-end sticky bottom-0">
+        <button type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+      </div>
+    </Form>
   )
 }

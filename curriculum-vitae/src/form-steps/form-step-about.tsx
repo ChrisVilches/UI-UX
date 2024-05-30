@@ -18,16 +18,12 @@ export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
   const onSubmit = (ev: FormEvent): void => {
     ev.preventDefault()
     ev.stopPropagation()
-    if (save({
-      about,
-      links: linkList
-    })) {
-      onSuccess()
-    }
+    save({ about, links: linkList })
+    onSuccess()
   }
 
-  // NOTE: This is the only step that doesn't have FormDelay, because the button is outside the
-  //       form element.
+  // NOTE: This is the only step that doesn't have Form, because the button is outside the
+  //       form element. And the demo stops here, so I don't need to do any fancy delay logic with overlay while submitting.
   return (
     <div className="">
       <div className="grow">
