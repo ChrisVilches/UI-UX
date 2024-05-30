@@ -4,7 +4,6 @@ import { genderSchema } from './schemas/gender'
 import { dateSchema } from './schemas/date'
 import { itemWithLevelSchema } from './schemas/item-with-level'
 import { openDB } from 'idb'
-import { sleep } from './util'
 
 const db = openDB('db', 1, {
   upgrade (db) {
@@ -32,12 +31,13 @@ const storageSchema = z.object({
 })
 
 const storagePartialSchema = storageSchema.partial()
-type StoragePartial = z.infer<typeof storagePartialSchema>
+export type StoragePartial = z.infer<typeof storagePartialSchema>
 
 export async function load (): Promise<StoragePartial | null> {
   const data = await (await db).get('cvs', 'main-user')
   const res = storagePartialSchema.safeParse(data)
   if (res.success) {
+    // await sleep(500)
     return res.data
   } else {
     console.error("Couldn't parse data")
@@ -51,7 +51,7 @@ export const save = async (data: unknown): Promise<void> => {
   const res = storagePartialSchema.safeParse(data)
 
   if (res.success) {
-    await sleep(1000)
+    // await sleep(1000)
     const current = (await load()) ?? {}
     await (await db).put('cvs', { ...current, ...res.data }, 'main-user')
   } else {

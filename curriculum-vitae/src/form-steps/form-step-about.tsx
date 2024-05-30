@@ -1,23 +1,13 @@
-import { type FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { LinksConfig } from '../components/links-config'
-import { load, save } from '../storage'
 import { type FormStepProps } from './form-step-wrapped'
 import { Alert } from '../components/alert'
 import { Form } from '../components/form'
 
-export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
-  const [about, setAbout] = useState('')
-  const [linkList, setLinkList] = useState<string[]>([])
+export function FormStepAbout ({ saveResume, resumeData, onSuccess }: FormStepProps): JSX.Element {
+  const [about, setAbout] = useState(resumeData.about ?? '')
+  const [linkList, setLinkList] = useState<string[]>(resumeData.links ?? [])
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    const setData = async (): Promise<void> => {
-      const data = await load()
-      setAbout(data?.about ?? '')
-      setLinkList(data?.links ?? [])
-    }
-    setData().catch(console.error)
-  }, [])
 
   const onSubmit = (ev: FormEvent): void => {
     ev.preventDefault()
@@ -25,7 +15,7 @@ export function FormStepAbout ({ onSuccess }: FormStepProps): JSX.Element {
 
     const fn = async (): Promise<void> => {
       setIsSubmitting(true)
-      await save({ about, links: linkList })
+      await saveResume({ about, links: linkList })
       onSuccess()
       setIsSubmitting(false)
     }

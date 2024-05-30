@@ -2,43 +2,37 @@ import { z } from 'zod'
 import { countrySchema } from '../schemas/country'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type GenderValue, genderValues, GenderSelect } from '../components/gender'
-import { useEffect, useState } from 'react'
-import { load, save } from '../storage'
+import { genderValues, GenderSelect } from '../components/gender'
 import { TextInput } from '../components/text-input'
 import { ComboboxWithIcon } from '../components/combobox'
 import { countries } from '../data/countries'
 import { type FormStepProps } from './form-step-wrapped'
 import { Form } from '../components/form'
+import { genderSchema } from '../schemas/gender'
 
 const schema = z.object({
   fullName: z.string().min(2, 'Enter your name'),
   email: z.string().email(),
-  nationality: countrySchema
+  nationality: countrySchema,
+  gender: genderSchema
 })
 
-export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
-  const [gender, setGender] = useState<GenderValue>(genderValues[0])
-  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting } } = useForm<z.infer<typeof schema>>({
+export function FormStepBasic ({ saveResume, resumeData, onSuccess }: FormStepProps): JSX.Element {
+  const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     // NOTE: This is to avoid showing error messages while the user is typing the E-mail, but it's still not valid (i.e. hasn'typed
     //       the @hostname.com yet).
-    mode: 'onTouched'
+    mode: 'onTouched',
+    defaultValues: {
+      fullName: resumeData.fullName ?? '',
+      email: resumeData.email ?? '',
+      nationality: resumeData.nationality ?? -1,
+      gender: resumeData.gender ?? genderValues[0]
+    }
   })
 
-  useEffect(() => {
-    const setData = async (): Promise<void> => {
-      const data = await load()
-      if (data?.fullName != null) setValue('fullName', data.fullName)
-      if (data?.email != null) setValue('email', data.email)
-      if (data?.gender != null) setGender(data.gender)
-      if (data?.nationality != null) setValue('nationality', data.nationality)
-    }
-    setData().catch(console.error)
-  }, [setValue])
-
   const onSubmit = async (data: z.infer<typeof schema>): Promise<void> => {
-    await save({ ...data, gender })
+    await saveResume(data)
     onSuccess()
   }
 
@@ -52,7 +46,9 @@ export function FormStepBasic ({ onSuccess }: FormStepProps): JSX.Element {
           <TextInput errorMessage={errors.email?.message} label="E-mail" id="email" {...register('email')}/>
         </div>
         <div className="mb-4 flex justify-center">
-          <GenderSelect value={gender} onChange={setGender}/>
+          <Controller control={control} name="gender" render={({ field: { value, onChange } }) => (
+            <GenderSelect value={value} onChange={onChange}/>
+          )}/>
         </div>
         <div className="mb-4 w-full">
           {/* NOTE: This is necessary to make it controlled. The uncontrolled version

@@ -1,21 +1,12 @@
-import { useState, useEffect, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { type WorkHistory } from '../models/work-history'
-import { load, save } from '../storage'
 import { WorkHistoryConfig } from '../components/work-history-config'
 import { type FormStepProps } from './form-step-wrapped'
 import { Form } from '../components/form'
 
-export function FormStepWorkHistory ({ onSuccess }: FormStepProps): JSX.Element {
-  const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>([])
+export function FormStepWorkHistory ({ saveResume, resumeData, onSuccess }: FormStepProps): JSX.Element {
+  const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>(resumeData.workHistory ?? [])
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  useEffect(() => {
-    const setData = async (): Promise<void> => {
-      const data = await load()
-      setWorkHistoryList(data?.workHistory ?? [])
-    }
-    setData().catch(console.error)
-  }, [])
 
   const onSubmit = (ev: FormEvent): void => {
     ev.preventDefault()
@@ -23,7 +14,7 @@ export function FormStepWorkHistory ({ onSuccess }: FormStepProps): JSX.Element 
 
     const fn = async (): Promise<void> => {
       setIsSubmitting(true)
-      await save({ workHistory: workHistoryList })
+      await saveResume({ workHistory: workHistoryList })
       setIsSubmitting(false)
       onSuccess()
     }

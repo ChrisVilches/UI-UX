@@ -1,6 +1,4 @@
-import { useEffect } from 'react'
 import { MultipleComboboxLevel } from '../components/multiple-combobox-level'
-import { load, save } from '../storage'
 import { skills } from '../data/skills'
 import { languages } from '../data/languages'
 import { Form } from '../components/form'
@@ -15,27 +13,18 @@ const schema = z.object({
   languages: itemWithLevelSchema.array().min(1, 'Fill in your native language')
 })
 
-export function FormStepSkillsLanguages ({ onSuccess }: FormStepProps): JSX.Element {
-  const { handleSubmit, setValue, control, formState: { isSubmitting } } = useForm<z.infer<typeof schema>>({
+export function FormStepSkillsLanguages ({ saveResume, resumeData, onSuccess }: FormStepProps): JSX.Element {
+  const { handleSubmit, control, formState: { isSubmitting } } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: 'all',
     defaultValues: {
-      languages: [],
-      skills: []
+      languages: resumeData.languages ?? [],
+      skills: resumeData.skills ?? []
     }
   })
 
-  useEffect(() => {
-    const setData = async (): Promise<void> => {
-      const data = await load()
-      if (data?.skills != null) setValue('skills', data.skills)
-      if (data?.languages != null) setValue('languages', data.languages)
-    }
-    setData().catch(console.error)
-  }, [setValue])
-
   const onSubmit = async (data: z.infer<typeof schema>): Promise<void> => {
-    await save(data)
+    await saveResume(data)
     onSuccess()
   }
 
