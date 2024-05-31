@@ -5,6 +5,8 @@ import { FormStepSkillsLanguages } from './form-step-skills-languages'
 import { FormStepAbout } from './form-step-about'
 import { type StoragePartial } from '../storage'
 import { useResumeData } from '../hooks/use-resume-data'
+import { Skeleton } from '../components/skeleton'
+import { SlideIn } from '../components/slide-in'
 
 export interface FormStepProps {
   onSuccess: () => void
@@ -16,69 +18,55 @@ export interface FormStepProps {
   saveResume: (data: unknown) => Promise<void>
 }
 
-function Skeleton (): JSX.Element {
-  return (
-    <div role="status" className="max-w-sm animate-pulse">
-      <div className="h-6 bg-gray-500 bg-opacity-20 rounded-sm w-48 mb-4"></div>
-      <div className="h-6 bg-gray-500 bg-opacity-20 rounded-sm max-w-[360px] mb-2.5"></div>
-      <div className="h-6 bg-gray-500 bg-opacity-20 rounded-sm mb-2.5"></div>
-      <div className="h-6 bg-gray-500 bg-opacity-20 rounded-sm max-w-[330px] mb-2.5"></div>
-      <div className="h-6 bg-gray-500 bg-opacity-20 rounded-sm max-w-[300px] mb-4"></div>
-      <div className="h-6 bg-gray-500 bg-opacity-20 rounded-sm max-w-[360px]"></div>
-      <span className="sr-only">Loading...</span>
-    </div>
-  )
-}
-
 function Step1 (): JSX.Element {
   const navigate = useNavigate()
-  const { isLoading, saveResume, data } = useResumeData()
+  const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
-    <>
+    <SlideIn enable={isCachedData}>
       <h1 className="mb-2 font-bold text-2xl">Basic Information</h1>
       {isLoading
         ? <Skeleton/>
         : (
-          <FormStepBasic saveResume={saveResume} resumeData={data} onSuccess={() => { navigate('/work-history', { state: { forward: true } }) }}/>
+          <FormStepBasic saveResume={saveResume} resumeData={data} onSuccess={() => { navigate('/work-history') }}/>
           )}
-    </>
+    </SlideIn>
   )
 }
 
 function Step2 (): JSX.Element {
   const navigate = useNavigate()
-  const { isLoading, saveResume, data } = useResumeData()
+  const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
-    <>
+    <SlideIn enable={isCachedData}>
       <h1 className="mb-2 font-bold text-2xl">Work History</h1>
       {isLoading
         ? <Skeleton/>
         : (
-          <FormStepWorkHistory saveResume={saveResume} resumeData={data} onSuccess={() => { navigate('/skill-lang', { state: { forward: true } }) }}/>
+          <FormStepWorkHistory saveResume={saveResume} resumeData={data} onSuccess={() => { navigate('/skill-lang') }}/>
           )}
-    </>
+    </SlideIn>
   )
 }
 
 function Step3 (): JSX.Element {
   const navigate = useNavigate()
-  const { isLoading, saveResume, data } = useResumeData()
+  const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
-    <>
+    <SlideIn enable={isCachedData}>
       <h1 className="mb-2 font-bold text-2xl">Skills & Languages</h1>
       {isLoading
         ? <Skeleton/>
         : (
-          <FormStepSkillsLanguages saveResume={saveResume} resumeData={data} onSuccess={() => { navigate('/about', { state: { forward: true } }) }}/>
+          <FormStepSkillsLanguages saveResume={saveResume} resumeData={data} onSuccess={() => { navigate('/about') }}/>
           )}
-    </>
+    </SlideIn>
   )
 }
 
 function Step4 (): JSX.Element {
-  const { isLoading, saveResume, data } = useResumeData()
+  const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
-    <>
+    <SlideIn enable={isCachedData} >
       <h1 className="font-bold text-2xl">About Me</h1>
       {isLoading
         ? <Skeleton/>
@@ -86,7 +74,7 @@ function Step4 (): JSX.Element {
           <FormStepAbout saveResume={saveResume} resumeData={data} onSuccess={() => { alert('End of demo!') }}/>
 
           )}
-    </>
+    </SlideIn>
   )
 }
 

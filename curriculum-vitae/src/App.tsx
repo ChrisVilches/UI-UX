@@ -1,14 +1,8 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { cloneElement, useEffect, useState } from 'react'
-import { type IconType } from 'react-icons'
-import { BsPersonFill } from 'react-icons/bs'
-import { GrTextAlignFull } from 'react-icons/gr'
+import { useEffect, useState } from 'react'
 import { IoMdMenu } from 'react-icons/io'
-import { MdWork } from 'react-icons/md'
-import { SiHyperskill } from 'react-icons/si'
-import { Link, useLocation, useOutlet } from 'react-router-dom'
-import { z } from 'zod'
+import { Menu } from './components/menu'
+import { Outlet, useLocation } from 'react-router-dom'
 
 // TODO: The only other item I'd like to add is education.
 //       Maybe I can put everything in the timeline, mix work experience, education, certifications, etc.
@@ -18,65 +12,8 @@ import { z } from 'zod'
 //       A timeline would look insane. Specially if it's well designed.
 
 function App (): JSX.Element {
-  const { pathname, state, key } = useLocation()
-  const stepName = pathname.substring(1)
-  const element = useOutlet()
-
-  const parseRes = z.object({ forward: z.boolean() }).safeParse(state)
-  let direction = [0, 0]
-  if (parseRes.success) {
-    direction = parseRes.data.forward ? [200, -100] : [-100, 200]
-  }
-
-  const transitionConfig = {
-    initial: 'initialState',
-    animate: 'animateState',
-    exit: 'exitState',
-    transition: { type: 'tween', duration: 0.2 },
-    variants: {
-      initialState: (x: [number, number]) => ({ opacity: 0, x: x[0] }),
-      animateState: { opacity: 1, x: 0 },
-      exitState: (x: [number, number]) => ({ opacity: 0, x: x[1] })
-    },
-    custom: direction
-  }
-
-  const MenuItem = ({ Icon, active }: { Icon: IconType, active: boolean }): JSX.Element => {
-    return (
-      <span className={`${active ? 'bg-green-300 ring-green-700 text-green-700' : 'bg-gray-300'} transition-colors duration-4 absolute flex items-center justify-center size-8 rounded-full -start-4 ring-4`}>
-        <Icon/>
-      </span>
-    )
-  }
-
-  const Menu = (): JSX.Element => (
-    <ol className="relative text-gray-500 border-s border-gray-200">
-      <li className="mb-10 ms-8">
-        <Link to="/basic" className="flex items-center">
-          <MenuItem Icon={BsPersonFill} active={stepName === 'basic'}/>
-          <h3 className="font-medium leading-tight">Basic Information</h3>
-        </Link>
-      </li>
-      <li className="mb-10 ms-8">
-        <Link to="/work-history" className="flex items-center">
-          <MenuItem Icon={MdWork} active={stepName === 'work-history'}/>
-          <h3 className="font-medium leading-tight">Work History</h3>
-        </Link>
-      </li>
-      <li className="mb-10 ms-8">
-        <Link to="/skill-lang" className="flex items-center">
-          <MenuItem Icon={SiHyperskill} active={stepName === 'skill-lang'}/>
-          <h3 className="font-medium leading-tight">Skills</h3>
-        </Link>
-      </li>
-      <li className="ms-8">
-        <Link to="/about" className="flex items-center">
-          <MenuItem Icon={GrTextAlignFull} active={stepName === 'about'}/>
-          <h3 className="font-medium leading-tight">About</h3>
-        </Link>
-      </li>
-    </ol>
-  )
+  const { pathname, key } = useLocation()
+  const currentStepName = pathname.substring(1)
 
   // NOTE: Both Tailwind and Headless UI have in their websites a sidebar implemented
   //       as a vanilla sidebar visible on desktop, and then hidden on mobile, and a
@@ -108,7 +45,7 @@ function App (): JSX.Element {
                   leaveTo="-translate-x-full"
                 >
                   <DialogPanel className="fixed overflow-y-auto inset-0 h-screen w-80 max-w-[calc(100%-3rem)] bg-slate-900 p-12 backdrop-blur-sm bg-opacity-85">
-                    <Menu/>
+                    <Menu currentStepName={currentStepName}/>
                   </DialogPanel>
                 </TransitionChild>
               </div>
@@ -117,19 +54,16 @@ function App (): JSX.Element {
         </Transition>
 
         <div className="hidden sm:block sticky sm:top-10 col-span-1 sm:col-span-3 sm:h-height">
-          <Menu/>
+          <Menu currentStepName={currentStepName}/>
         </div>
         {/*
         TODO: I used these classes to try to hide the scrollbar but I still get some glitches:
         w-full h-screens overflow-hidden relative
         (these go on the parent container)
         */}
+
         <div className="col-span-11 sm:col-span-9">
-          <AnimatePresence mode="popLayout" custom={direction}>
-            <motion.div key={key} {...transitionConfig}>
-              {element != null && cloneElement(element, { key })}
-            </motion.div>
-          </AnimatePresence>
+          <Outlet/>
         </div>
       </div>
     </>
