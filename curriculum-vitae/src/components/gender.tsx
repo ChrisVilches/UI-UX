@@ -14,7 +14,7 @@ interface GenderSelectProps {
 
 function Check (): JSX.Element {
   return (
-    <div className="bg-green-800 rounded-full size-4 flex items-center justify-center">
+    <div className="bg-green-700 rounded-full size-4 flex items-center justify-center">
       <FaCheck className="size-2"/>
     </div>
   )
@@ -33,7 +33,7 @@ const items: Item[] = [
 ]
 
 export function GenderSelect ({ onChange, value }: GenderSelectProps): JSX.Element {
-  const baseClass = 'border-4 p-0 outline-none'
+  const baseClass = 'border-4 p-0 outline-none rounded-md'
   const nonSelected = 'border-slate-500 bg-slate-900 hover:bg-slate-800 focus:bg-slate-800 hover:border-slate-300 focus:border-slate-300 transition-all duration-500'
 
   return (

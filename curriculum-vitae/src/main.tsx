@@ -16,8 +16,11 @@ const router = createBrowserRouter([
       { path: '/about', Component: FormStepWrapped.Step4 },
       { path: '', element: <Navigate to="/basic"/> }
     ]
-  }
-], { basename: import.meta.env.BASE_URL })
+  },
+], {
+  // TODO: This value shouldn't be hardcoded.
+  basename: '/curriculum-vitae'
+})
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement).render(
   <React.StrictMode>

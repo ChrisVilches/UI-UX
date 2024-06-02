@@ -7,6 +7,8 @@ import { z } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { itemWithLevelSchema } from '../schemas/item-with-level'
+import { TextError } from '../components/text-error'
+import { FormStepSubmitButton } from '../components/form-step-submit-button'
 
 const schema = z.object({
   skills: itemWithLevelSchema.array(),
@@ -34,7 +36,7 @@ export function FormStepSkillsLanguages ({ saveResume, resumeData, onSuccess }: 
         <Controller control={control} name="skills" render={({ fieldState, field: { onChange, onBlur, value, ref } }) => (
           <>
             <MultipleComboboxLevel selected={value} onChange={onChange} onBlur={onBlur} ref={ref} list={skills} defaultLevel={1} levels={['Beginner', 'Intermediate', 'Advanced']} placeholder="e.g. Excel" emptyMessage="Please fill in your skills"/>
-            {fieldState.error != null && <span className="text-sm text-red-500">{fieldState.error.message}</span>}
+            <TextError>{fieldState.error?.message}</TextError>
           </>
         )}/>
       </div>
@@ -42,13 +44,13 @@ export function FormStepSkillsLanguages ({ saveResume, resumeData, onSuccess }: 
         <Controller control={control} name="languages" render={({ fieldState, field: { onChange, onBlur, value, ref } }) => (
           <>
             <MultipleComboboxLevel selected={value} onChange={onChange} onBlur={onBlur} ref={ref} list={languages} defaultLevel={2} levels={['Basic', 'Conversational', 'Business', 'Fluent', 'Native']} placeholder="e.g. English" emptyMessage="Please fill in the languages you speak"/>
-            {fieldState.error != null && <span className="text-sm text-red-500">{fieldState.error.message}</span>}
+            <TextError>{fieldState.error?.message}</TextError>
           </>
         )}/>
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button disabled={isSubmitting} type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <FormStepSubmitButton isSubmitting={isSubmitting}/>
       </div>
     </Form>
   )

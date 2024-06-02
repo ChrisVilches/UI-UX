@@ -1,9 +1,6 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import { type ReactNode } from 'react'
 
-// TODO: Challenge (for the entire app): get away from the "slate" colors and use my own custom ones.
-//       This is the new shit.
-
 interface ModalProps {
   show: boolean
   onCloseModal: () => void

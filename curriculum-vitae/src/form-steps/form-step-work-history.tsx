@@ -3,6 +3,7 @@ import { type WorkHistory } from '../models/work-history'
 import { WorkHistoryConfig } from '../components/work-history-config'
 import { type FormStepProps } from './form-step-wrapped'
 import { Form } from '../components/form'
+import { FormStepSubmitButton } from '../components/form-step-submit-button'
 
 export function FormStepWorkHistory ({ saveResume, resumeData, onSuccess }: FormStepProps): JSX.Element {
   const [workHistoryList, setWorkHistoryList] = useState<WorkHistory[]>(resumeData.workHistory ?? [])
@@ -28,7 +29,7 @@ export function FormStepWorkHistory ({ saveResume, resumeData, onSuccess }: Form
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button disabled={isSubmitting} type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <FormStepSubmitButton isSubmitting={isSubmitting}/>
       </div>
     </Form>
   )

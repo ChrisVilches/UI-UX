@@ -59,7 +59,7 @@ export const ComboboxWithIcon = forwardRef((props: ComboboxWithIconProps, ref: F
         </div>
 
         <ComboboxInput
-          className="p-2 w-full pl-10 cursor-default"
+          className="cursor-default input-primary pl-10"
           ref={ref}
           // displayValue={() => selected?.name ?? ''}
           // NOTE: This doesn't work, sometimes the selected ID and shown name are not congruent.

@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { TextInput } from './text-input'
 import { compareYearMonthDate } from '../models/date'
 import { dateSchema } from '../schemas/date'
+import { TextError } from './text-error'
 
 interface WorkHistoryFormProps {
   initialWorkHistory: WorkHistory
@@ -79,7 +80,7 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
                 }}/>
               </div>
             </div>
-            {fieldState.error != null && <span className="text-sm text-red-500">{fieldState.error.message}</span>}
+            <TextError>{fieldState.error?.message}</TextError>
 
             <div className="flex items-center justify-end mt-2">
               <input
@@ -107,7 +108,8 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
         <TextInput errorMessage={errors.description?.message} {...register('description')} label="Description" id="description"/>
       </div>
 
-      <button className='p-4 rounded-md bg-green-800 w-full md:w-auto' type="submit">
+      {/* TODO: Turn this button into a component, and then use it for the links form too */}
+      <button className='p-4 rounded-md bg-green-700 w-full md:w-auto' type="submit">
         {isNew ? 'Save' : 'Edit'}
       </button>
     </form>

@@ -8,8 +8,11 @@ import { type IconType } from 'react-icons'
 import { TextInput } from './text-input'
 import { IoIosAdd } from 'react-icons/io'
 import { MdOutlineModeEdit } from 'react-icons/md'
-import { IoTrashOutline } from 'react-icons/io5'
 import { useEscape } from '../hooks/use-escape'
+import { Confirm } from './confirm'
+import { TrashIconButton } from './trash-icon-button'
+import { useConfirmDialog } from '../hooks/use-confirm-dialog'
+import { SecondaryButton } from './secondary-button'
 
 const icons = Object.entries({
   'youtube.com': RiYoutubeLine,
@@ -97,9 +100,9 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
     <form onSubmit={onSubmitForm}>
       <div className="flex space-x-2">
         <TextInput id="url" className="grow" label="URL" ref={setRef} {...inputProps}></TextInput>
-        <button type="submit" disabled={!isValid} className={`p-2 rounded-md ${isValid ? 'bg-green-700' : 'bg-gray-300 text-gray-500'}`}>
+        <SecondaryButton disabled={!isValid} type="submit">
           {variant === 'new' ? <IoIosAdd/> : <MdOutlineModeEdit/>}
-        </button>
+        </SecondaryButton>
       </div>
     </form>
   )
@@ -114,6 +117,7 @@ interface LinksConfigProps {
 
 export function LinksConfig ({ list, onChange }: LinksConfigProps): JSX.Element {
   const [editing, setEditing] = useState(-1)
+  const { showConfirm, confirmItem, hideConfirm, setConfirmItem } = useConfirmDialog<string>()
 
   const update = ({ url }: { url: string }): void => {
     setEditing(-1)
@@ -168,7 +172,7 @@ export function LinksConfig ({ list, onChange }: LinksConfigProps): JSX.Element 
                     return <Icon className="size-6 shrink-0"/>
                   })()}
                   <div className="grow text-ellipsis overflow-hidden whitespace-nowrap">
-                    <a href={url} target="_blank" rel="noreferrer">
+                    <a className="text-blue-500 hover:text-blue-400 duration-500 hover:underline" href={url} target="_blank" rel="noreferrer">
                       {url}
                     </a>
                   </div>
@@ -176,15 +180,24 @@ export function LinksConfig ({ list, onChange }: LinksConfigProps): JSX.Element 
                     <button type="button" className="mr-2 text-slate-400 p-1 hover:text-slate-300 duration-500" onClick={() => { setEditing(idx) }}>
                       <MdOutlineModeEdit/>
                     </button>
-                    <button type="button" className="text-slate-400 p-1 hover:text-red-400 rounded-md duration-500" onClick={() => { remove(idx) }}>
-                      <IoTrashOutline/>
-                    </button>
+                    <TrashIconButton onClick={() => { setConfirmItem(url) }}/>
                   </div>
                 </div>
               </>
               )}
         </div>
       ))}
+
+      <Confirm
+        show={showConfirm}
+        onConfirm={() => { remove(list.indexOf(confirmItem ?? '')) }}
+        onClose={hideConfirm}
+        buttonLabel="Delete"
+        variant="danger"
+      >
+        Are you sure you want to remove this URL?
+        <div className="mt-10"><b>{confirmItem}</b></div>
+      </Confirm>
 
       <div className="mt-10">
         <EditLink ref={inputRef} url="" onSubmit={addUrl} variant="new"/>

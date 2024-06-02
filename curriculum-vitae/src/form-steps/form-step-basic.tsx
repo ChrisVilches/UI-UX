@@ -9,6 +9,8 @@ import { countries } from '../data/countries'
 import { type FormStepProps } from './form-step-wrapped'
 import { Form } from '../components/form'
 import { genderSchema } from '../schemas/gender'
+import { TextError } from '../components/text-error'
+import { FormStepSubmitButton } from '../components/form-step-submit-button'
 
 const schema = z.object({
   fullName: z.string().min(2, 'Enter your name'),
@@ -64,14 +66,14 @@ export function FormStepBasic ({ saveResume, resumeData, onSuccess }: FormStepPr
                 defaultIcon={<span>🌍</span>}
                 list={countries}
                 placeholder="Select your nationality"/>
-              {(errors.nationality != null) && <span className="text-red-500">{errors.nationality.message}</span>}
+              <TextError>{errors.nationality?.message}</TextError>
             </>
           )}/>
         </div>
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button disabled={isSubmitting} type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <FormStepSubmitButton isSubmitting={isSubmitting}/>
       </div>
     </Form>
   )

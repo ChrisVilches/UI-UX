@@ -3,6 +3,7 @@ import { LinksConfig } from '../components/links-config'
 import { type FormStepProps } from './form-step-wrapped'
 import { Alert } from '../components/alert'
 import { Form } from '../components/form'
+import { FormStepSubmitButton } from '../components/form-step-submit-button'
 
 export function FormStepAbout ({ saveResume, resumeData, onSuccess }: FormStepProps): JSX.Element {
   const [about, setAbout] = useState(resumeData.about ?? '')
@@ -47,7 +48,7 @@ export function FormStepAbout ({ saveResume, resumeData, onSuccess }: FormStepPr
       </div>
 
       <div className="flex justify-end sticky bottom-0">
-        <button disabled={isSubmitting} form="form" type="submit" className='w-full md:w-auto p-4 rounded-md bg-green-700'>{isSubmitting ? 'Wait...' : 'Save'}</button>
+        <FormStepSubmitButton isSubmitting={isSubmitting} form="form"/>
       </div>
     </div>
   )

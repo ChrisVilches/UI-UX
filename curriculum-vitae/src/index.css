@@ -10,7 +10,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  @apply bg-slate-900;
+  @apply bg-slate-950;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,6 +27,27 @@ body {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+}
+
+.input-primary {
+  @apply block;
+  @apply px-2.5;
+  @apply pb-2.5;
+  @apply pt-4;
+  @apply w-full;
+  @apply text-sm;
+  @apply bg-transparent;
+  @apply rounded-lg;
+  @apply border-[1px];
+  @apply border-slate-500;
+  @apply appearance-none;
+  @apply text-white;
+  @apply focus:outline-none;
+  @apply focus:ring-0;
+  @apply focus:border-green-200;
+  @apply bg-slate-800;
+  @apply placeholder-gray-400;
+  @apply text-slate-200;
 }
 
 .rainbow-gradient {

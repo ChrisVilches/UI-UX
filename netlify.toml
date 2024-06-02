@@ -1,0 +1,10 @@
+[context.production]
+  environment = { BASE_URL="https://ui-ux.chrisvilches.com/" }
+
+[context.development]
+  environment = { BASE_URL="http://localhost:8888/" }
+
+[[redirects]]
+  from = "/curriculum-vitae/*"
+  to = "/curriculum-vitae/index.html"
+  status = 200
