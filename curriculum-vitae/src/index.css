@@ -29,9 +29,8 @@ body {
   font-style: normal;
 }
 
-.input-primary {
+.input {
   @apply block;
-  @apply px-2.5;
   @apply pb-2.5;
   @apply pt-4;
   @apply w-full;

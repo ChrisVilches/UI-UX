@@ -16,7 +16,7 @@ const router = createBrowserRouter([
       { path: '/about', Component: FormStepWrapped.Step4 },
       { path: '', element: <Navigate to="/basic"/> }
     ]
-  },
+  }
 ], {
   // TODO: This value shouldn't be hardcoded.
   basename: '/curriculum-vitae'
