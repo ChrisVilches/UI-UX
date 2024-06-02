@@ -30,7 +30,7 @@ interface UseScrollReturn {
   contentRef: MutableRefObject<HTMLDivElement | null>
 }
 
-export function useScroll (): UseScrollReturn {
+export function useScroll (enableVertical: boolean): UseScrollReturn {
   const scrollContainerRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
   const scrollRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
   const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
@@ -108,7 +108,8 @@ export function useScroll (): UseScrollReturn {
     }
 
     const verticalDrag = (): void => {
-      // TODO: A bit glitchy
+      // TODO: A bit glitchy (but at least it can be disabled now)
+      if (!enableVertical) return
       if (!scrollState.current.dragging) return
 
       const dy = (scrollState.current.mousePos.y - scroll.getBoundingClientRect().top) - scrollState.current.dragOffset.y
@@ -213,7 +214,7 @@ export function useScroll (): UseScrollReturn {
       container.removeEventListener('mousedown', trackPressHandle)
       container.removeEventListener('touchstart', trackTapHandle)
     }
-  }, [containerWidth, setScrollSize])
+  }, [containerWidth, setScrollSize, enableVertical])
 
   return {
     containerHeight,
