@@ -4,6 +4,10 @@ import App from './App.tsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { FormStepWrapped } from './form-steps/form-step-wrapped.tsx'
+import { name } from '../package.json'
+
+// NOTE: App must be deployed in /<package-name>
+const prodOpts = { basename: `/${name}` }
 
 const router = createBrowserRouter([
   {
@@ -17,10 +21,7 @@ const router = createBrowserRouter([
       { path: '', element: <Navigate to="/basic"/> }
     ]
   }
-], {
-  // TODO: This value shouldn't be hardcoded.
-  basename: '/curriculum-vitae'
-})
+], import.meta.env.PROD ? prodOpts : {})
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLDivElement).render(
   <React.StrictMode>

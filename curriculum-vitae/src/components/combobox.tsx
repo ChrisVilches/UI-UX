@@ -61,9 +61,6 @@ export const ComboboxWithIcon = forwardRef((props: ComboboxWithIconProps, ref: F
         <ComboboxInput
           className="cursor-default input pl-10"
           ref={ref}
-          // displayValue={() => selected?.name ?? ''}
-          // NOTE: This doesn't work, sometimes the selected ID and shown name are not congruent.
-          // UPDATE: Seems to work now? Use the line commented out above if it doesn't.
           displayValue={(item: ComboboxWithIconItem): string => item?.name ?? ''}
           placeholder={placeholder}
           aria-label="Assignee"
@@ -74,7 +71,7 @@ export const ComboboxWithIcon = forwardRef((props: ComboboxWithIconProps, ref: F
 
       <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] h-44 z-50">
         {getFiltered().map((item) => (
-          <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-blue-600 p-4 group flex gap-2 bg-slate-900">
+          <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-slate-500 p-4 group flex gap-2 bg-slate-900">
             {item.icon} {item.name}
           </ComboboxOption>
         ))}

@@ -7,6 +7,7 @@ import { TextInput } from './text-input'
 import { compareYearMonthDate } from '../models/date'
 import { dateSchema } from '../schemas/date'
 import { TextError } from './text-error'
+import { PrimaryButton } from './buttons'
 
 interface WorkHistoryFormProps {
   initialWorkHistory: WorkHistory
@@ -98,20 +99,19 @@ export function WorkHistoryForm ({ initialWorkHistory, onSubmit }: WorkHistoryFo
         )}/>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-8">
         <TextInput errorMessage={errors.companyName?.message} {...register('companyName')} label="Company name" id="company-name"/>
       </div>
-      <div className="mb-4">
+      <div className="mb-8">
         <TextInput errorMessage={errors.role?.message} {...register('role')} label="Role" id="role"/>
       </div>
       <div className="mb-8">
         <TextInput errorMessage={errors.description?.message} {...register('description')} label="Description" id="description"/>
       </div>
 
-      {/* TODO: Turn this button into a component, and then use it for the links form too */}
-      <button className='p-4 rounded-md bg-green-700 w-full md:w-auto' type="submit">
+      <PrimaryButton type="submit">
         {isNew ? 'Save' : 'Edit'}
-      </button>
+      </PrimaryButton>
     </form>
   )
 }

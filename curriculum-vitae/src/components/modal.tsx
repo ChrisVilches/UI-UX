@@ -11,9 +11,9 @@ interface ModalProps {
 export default function Modal ({ show, onCloseModal, children, title }: ModalProps): JSX.Element {
   return (
     <Transition appear show={show}>
-      <Dialog as="div" className="relative z-10 focus:outline-none" onClose={onCloseModal}>
+      <Dialog as="div" className="relative z-50 focus:outline-none" onClose={onCloseModal}>
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true"/>
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div className="fixed inset-0 z-50 w-screen overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
               enter="ease-out duration-300"

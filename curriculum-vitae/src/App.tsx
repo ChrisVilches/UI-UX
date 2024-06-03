@@ -11,13 +11,20 @@ import { Outlet, useLocation } from 'react-router-dom'
 //       Then do some kind of "timeline"-y design thingy, like Facebook maybe? lol
 //       A timeline would look insane. Specially if it's well designed.
 
+const titles: Record<string, string> = {
+  basic: 'Basic Information',
+  'work-history': 'Work History',
+  'skill-lang': 'Skills & Languages',
+  about: 'About Me'
+}
+
 function App (): JSX.Element {
   const { pathname, key } = useLocation()
   const currentStepName = pathname.substring(1)
 
   // NOTE: Both Tailwind and Headless UI have in their websites a sidebar implemented
   //       as a vanilla sidebar visible on desktop, and then hidden on mobile, and a
-  //       button + dialog (Headless UI component) visible on mobile. The easy way.
+  //       button + dialog (Headless UI component) visible on mobile.
   const [menuOpen, setMenuOpen] = useState(false)
 
   // NOTE: It seems on Tailwind website they close it by simply adding a closeMenu function
@@ -29,11 +36,8 @@ function App (): JSX.Element {
   return (
     <>
       <div className="block sm:grid sm:grid-cols-12 container h-screen mx-auto px-4 w-full sm:w-10/12 md:w-8/12 pt-10">
-        <div className="sm:hidden sticky top-0 flex justify-end backdrop-blur bg-opacity-20 py-2">
-          <button onClick={() => { setMenuOpen(true) }}><IoMdMenu/></button>
-        </div>
         <Transition appear show={menuOpen}>
-          <Dialog onClose={() => { setMenuOpen(false) }} className="relative z-50 block sm:hidden">
+          <Dialog onClose={() => { setMenuOpen(false) }} className="relative z-40 block sm:hidden">
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
               <div className="flex min-h-full items-center justify-center p-4">
                 <TransitionChild
@@ -56,13 +60,12 @@ function App (): JSX.Element {
         <div className="hidden sm:block sticky sm:top-10 col-span-1 sm:col-span-3 sm:h-height">
           <Menu currentStepName={currentStepName}/>
         </div>
-        {/*
-        TODO: I used these classes to try to hide the scrollbar but I still get some glitches:
-        w-full h-screens overflow-hidden relative
-        (these go on the parent container)
-        */}
 
-        <div className="col-span-11 sm:col-span-9">
+        <div className="col-span-11 sm:col-span-9 contain-paint sm:contain-none">
+          <div className="z-20 h-20 flex items-center mb-5 sticky sm:relative top-0 bg-slate-950 py-5 backdrop-blur bg-opacity-90">
+            <h1 className="grow font-bold text-2xl">{titles[currentStepName]}</h1>
+            <button className="sm:hidden p-4" onClick={() => { setMenuOpen(true) }}><IoMdMenu/></button>
+          </div>
           <Outlet/>
         </div>
       </div>

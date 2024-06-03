@@ -23,7 +23,6 @@ function Step1 (): JSX.Element {
   const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
     <SlideIn enable={isCachedData}>
-      <h1 className="mb-2 font-bold text-2xl">Basic Information</h1>
       {isLoading
         ? <Skeleton/>
         : (
@@ -38,7 +37,6 @@ function Step2 (): JSX.Element {
   const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
     <SlideIn enable={isCachedData}>
-      <h1 className="mb-2 font-bold text-2xl">Work History</h1>
       {isLoading
         ? <Skeleton/>
         : (
@@ -53,7 +51,6 @@ function Step3 (): JSX.Element {
   const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
     <SlideIn enable={isCachedData}>
-      <h1 className="mb-2 font-bold text-2xl">Skills & Languages</h1>
       {isLoading
         ? <Skeleton/>
         : (
@@ -66,8 +63,7 @@ function Step3 (): JSX.Element {
 function Step4 (): JSX.Element {
   const { isLoading, saveResume, data, isCachedData } = useResumeData()
   return (
-    <SlideIn enable={isCachedData} >
-      <h1 className="font-bold text-2xl">About Me</h1>
+    <SlideIn enable={isCachedData}>
       {isLoading
         ? <Skeleton/>
         : (

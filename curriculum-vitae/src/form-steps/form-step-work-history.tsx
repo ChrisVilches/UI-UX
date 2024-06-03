@@ -28,7 +28,7 @@ export function FormStepWorkHistory ({ saveResume, resumeData, onSuccess }: Form
         <WorkHistoryConfig list={workHistoryList} onChange={setWorkHistoryList}/>
       </div>
 
-      <div className="flex justify-end sticky bottom-0">
+      <div className="flex justify-end sticky bottom-0 sm:relative sm:py-4">
         <FormStepSubmitButton isSubmitting={isSubmitting}/>
       </div>
     </Form>

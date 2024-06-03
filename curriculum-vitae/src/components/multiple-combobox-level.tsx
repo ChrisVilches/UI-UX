@@ -1,4 +1,4 @@
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Select } from '@headlessui/react'
 import React, { type ForwardedRef, forwardRef, useMemo, useState } from 'react'
 import Fuse from 'fuse.js'
 import { IoTrashOutline } from 'react-icons/io5'
@@ -15,13 +15,22 @@ function LevelSelect ({ value, onChange, levels }: LevelSelectProps): JSX.Elemen
   const selected = 'bg-slate-800'
   const nonSelected = 'bg-transparent text-slate-500'
   return (
-    <div className="flex space-x-2 overflow-x-auto">
-      {levels.map((level, idx) => (
-        <button type="button" key={idx} onClick={() => { onChange(idx) }} className={`${base} ${value === idx ? selected : nonSelected}`}>
-          {level}
-        </button>
-      ))}
-    </div>
+    <>
+      <div className="space-x-2 overflow-x-auto hidden xl:flex">
+        {levels.map((level, idx) => (
+          <button type="button" key={idx} onClick={() => { onChange(idx) }} className={`${base} ${value === idx ? selected : nonSelected}`}>
+            {level}
+          </button>
+        ))}
+      </div>
+      <div className="xl:hidden">
+        <Select className="input" value={value} onChange={(ev) => { onChange(Number(ev.target.value)) }}>
+          {levels.map((level, idx) => (
+            <option key={idx} value={idx}>{level}</option>
+          ))}
+        </Select>
+      </div>
+    </>
   )
 }
 
@@ -122,7 +131,7 @@ export const MultipleComboboxLevel = forwardRef((props: MultipleComboboxLevelPro
         onBlur={onBlur}
         ref={ref}
         value={query}
-        className="input px-2.5"
+        className="input"
         placeholder={placeholder}
         aria-label="Assignees"
         autoComplete="off"
@@ -130,7 +139,7 @@ export const MultipleComboboxLevel = forwardRef((props: MultipleComboboxLevelPro
 
       <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] z-50">
         {getFiltered().map((item) => (
-          <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-blue-600 p-4 group flex gap-2 bg-slate-900">
+          <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-slate-500 p-4 group flex gap-2 bg-slate-900">
             {item.name}
           </ComboboxOption>
         ))}

@@ -12,7 +12,7 @@ import { useEscape } from '../hooks/use-escape'
 import { Confirm } from './confirm'
 import { TrashIconButton } from './trash-icon-button'
 import { useConfirmDialog } from '../hooks/use-confirm-dialog'
-import { SecondaryButton } from './secondary-button'
+import { SecondaryButton } from './buttons'
 
 const icons = Object.entries({
   'youtube.com': RiYoutubeLine,
@@ -99,10 +99,12 @@ const EditLink = forwardRef<HTMLInputElement, EditLinkProps>(({ url, onSubmit, o
   return (
     <form onSubmit={onSubmitForm}>
       <div className="flex space-x-2">
-        <TextInput id="url" className="grow" label="URL" ref={setRef} {...inputProps}></TextInput>
-        <SecondaryButton disabled={!isValid} type="submit">
-          {variant === 'new' ? <IoIosAdd/> : <MdOutlineModeEdit/>}
-        </SecondaryButton>
+        <TextInput id="url" label="URL" ref={setRef} {...inputProps}></TextInput>
+        <div>
+          <SecondaryButton disabled={!isValid} type="submit">
+            {variant === 'new' ? <IoIosAdd/> : <MdOutlineModeEdit/>}
+          </SecondaryButton>
+        </div>
       </div>
     </form>
   )

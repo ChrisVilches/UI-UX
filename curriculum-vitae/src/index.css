@@ -29,24 +29,27 @@ body {
   font-style: normal;
 }
 
-.input {
-  @apply block;
-  @apply pb-2.5;
-  @apply pt-4;
-  @apply w-full;
-  @apply text-sm;
-  @apply bg-transparent;
-  @apply rounded-lg;
-  @apply border-[1px];
-  @apply border-slate-500;
-  @apply appearance-none;
-  @apply text-white;
-  @apply focus:outline-none;
-  @apply focus:ring-0;
-  @apply focus:border-green-200;
-  @apply bg-slate-800;
-  @apply placeholder-gray-400;
-  @apply text-slate-200;
+@layer base {
+  .input {
+    @apply block;
+    @apply px-2.5;
+    @apply pb-2.5;
+    @apply pt-4;
+    @apply w-full;
+    @apply text-sm;
+    @apply bg-transparent;
+    @apply rounded-lg;
+    @apply border-[1px];
+    @apply border-slate-500;
+    @apply appearance-none;
+    @apply text-white;
+    @apply focus:outline-none;
+    @apply focus:ring-0;
+    @apply focus:border-green-200;
+    @apply bg-slate-800;
+    @apply placeholder-gray-500;
+    @apply text-slate-200;
+  }
 }
 
 .rainbow-gradient {

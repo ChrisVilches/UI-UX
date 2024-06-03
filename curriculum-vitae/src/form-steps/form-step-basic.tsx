@@ -41,18 +41,18 @@ export function FormStepBasic ({ saveResume, resumeData, onSuccess }: FormStepPr
   return (
     <Form isSubmitting={isSubmitting} onSubmit={handleSubmit(onSubmit)}>
       <div className="my-4">
-        <div className="relative mb-4">
+        <div className="relative mb-8">
           <TextInput errorMessage={errors.fullName?.message} label="Full name" id="full-name" {...register('fullName')}/>
         </div>
-        <div className="mb-4">
+        <div className="mb-8">
           <TextInput errorMessage={errors.email?.message} label="E-mail" id="email" {...register('email')}/>
         </div>
-        <div className="mb-4 flex justify-center">
+        <div className="mb-8 flex justify-center">
           <Controller control={control} name="gender" render={({ field: { value, onChange } }) => (
             <GenderSelect value={value} onChange={onChange}/>
           )}/>
         </div>
-        <div className="mb-4 w-full">
+        <div className="mb-8 w-full">
           {/* NOTE: This is necessary to make it controlled. The uncontrolled version
           gets the input display changed, ignoring the 'displayValue'. Remember that register()
           doesn't include the 'value' prop */}
@@ -72,7 +72,7 @@ export function FormStepBasic ({ saveResume, resumeData, onSuccess }: FormStepPr
         </div>
       </div>
 
-      <div className="flex justify-end sticky bottom-0">
+      <div className="flex justify-end sticky bottom-0 sm:relative sm:py-4">
         <FormStepSubmitButton isSubmitting={isSubmitting}/>
       </div>
     </Form>

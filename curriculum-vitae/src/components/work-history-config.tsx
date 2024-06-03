@@ -7,7 +7,7 @@ import { WorkHistoryForm } from './work-history-form'
 import { MdOutlineModeEdit } from 'react-icons/md'
 import { IoIosAdd } from 'react-icons/io'
 import { Alert } from './alert'
-import { SecondaryButton } from './secondary-button'
+import { SecondaryButton } from './buttons'
 import { Confirm } from './confirm'
 import { TrashIconButton } from './trash-icon-button'
 import { useConfirmDialog } from '../hooks/use-confirm-dialog'
@@ -25,13 +25,13 @@ interface WorkHistoryConfigProps {
 }
 
 export function WorkHistoryConfig ({ list, onChange }: WorkHistoryConfigProps): JSX.Element {
-  const [formWorkHistory, setFormWorkHistory] = useState<WorkHistory>(createWorkHistory())
+  const [formWorkHistory, setFormWorkHistory] = useState<WorkHistory>(createWorkHistory(false))
   const [showModal, setShowModal] = useState(false)
   const { showConfirm, confirmItem, hideConfirm, setConfirmItem } = useConfirmDialog<WorkHistory>()
 
   const openEditWorkHistory = (id?: string): void => {
     if (typeof id === 'undefined') {
-      setFormWorkHistory(createWorkHistory())
+      setFormWorkHistory(createWorkHistory(list.length === 0))
       setShowModal(true)
     } else {
       const w = list.find(w => w.id === id)
@@ -59,16 +59,16 @@ export function WorkHistoryConfig ({ list, onChange }: WorkHistoryConfigProps): 
     <>
       {list.length === 0
         ? (
-          <div className="mb-10">
-            <Alert variant="warn" className='mb-4'>Add your work experience here</Alert>
-            <button type="button" onClick={() => { openEditWorkHistory() }} className="w-full md:w-auto flex items-center space-x-2 p-4 bg-green-700 rounded-md">
+          <div className="mb-20">
+            <Alert variant="warn" className='mb-8'>Add your work experience here</Alert>
+            <SecondaryButton type="button" onClick={() => { openEditWorkHistory() }}>
               <IoIosAdd className="size-6"/>
-              <span>Add work experience</span>
-            </button>
+              <span>Add your latest work experience</span>
+            </SecondaryButton>
           </div>
           )
         : (
-          <div className="sticky top-0 w-full mb-4 flex justify-center bg-slate-950 py-4 bg-opacity-40">
+          <div className="sticky top-20 sm:top-0 w-full mb-4 pb-4 flex justify-center bg-slate-950 bg-opacity-90">
             <SecondaryButton onClick={() => { openEditWorkHistory() }}>
               <IoIosAdd className="size-6"/>
               <span>Add another work experience</span>

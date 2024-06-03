@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import Modal from './modal'
+import { DangerButton } from './buttons'
 
 interface ConfirmProps {
   show: boolean
@@ -19,11 +20,15 @@ export function Confirm ({ buttonLabel, show, children, onConfirm, onClose, titl
       {children}
 
       <div className="flex space-x-4 mt-10">
-        <button className="grow md:grow-0 bg-red-700 hover:bg-red-600 duration-500 p-4 rounded-md" onClick={() => {
-          onConfirm()
-          onClose()
-        }}>{buttonLabel}</button>
-        <button onClick={onClose} className="grow md:grow-0">Cancel</button>
+        <div className="grow md:grow-0">
+          <DangerButton onClick={() => {
+            onConfirm()
+            onClose()
+          }}>
+            {buttonLabel}
+          </DangerButton>
+        </div>
+        <button onClick={onClose} className="grow md:grow-0 p-4">Cancel</button>
       </div>
     </Modal>
   )

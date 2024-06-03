@@ -49,7 +49,7 @@ export function FormStepSkillsLanguages ({ saveResume, resumeData, onSuccess }: 
         )}/>
       </div>
 
-      <div className="flex justify-end sticky bottom-0">
+      <div className="flex justify-end sticky bottom-0 sm:relative sm:py-4">
         <FormStepSubmitButton isSubmitting={isSubmitting}/>
       </div>
     </Form>

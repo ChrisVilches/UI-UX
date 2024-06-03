@@ -22,7 +22,6 @@ export function formatMonth (m: number): string {
   return months[m - 1]
 }
 
-// TODO: Unit test.
 export function compareYearMonthDate (lhs: YearMonthDate, rhs: YearMonthDate): number {
   if (lhs.year === rhs.year) {
     return lhs.month - rhs.month

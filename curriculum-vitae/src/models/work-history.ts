@@ -20,7 +20,7 @@ export function compareWorkHistory (lhs: WorkHistory, rhs: WorkHistory): number 
   return cmp
 }
 
-export const createWorkHistory = (): WorkHistory => {
+export const createWorkHistory = (stillWorking: boolean): WorkHistory => {
   const year = (new Date()).getFullYear()
   return {
     id: undefined,
@@ -28,6 +28,6 @@ export const createWorkHistory = (): WorkHistory => {
     role: '',
     description: '',
     startDate: { year, month: 1 },
-    endDate: { year, month: 1 }
+    endDate: stillWorking ? undefined : { year, month: 1 }
   }
 }
