@@ -14,6 +14,7 @@ A repository that contains several applications made with the purpose of practic
 | Live Demo | Description |
 |--|--|
 | [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/anim-3d.jpg?raw=true" width=250>](https://ui-ux.chrisvilches.com/anim-3d) | <h3>anim-3d ([Live Demo](https://ui-ux.chrisvilches.com/anim-3d))</h3>Small app made with Three.js and React. |
+| [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/curriculum-vitae.jpg?raw=true" width=250>](https://ui-ux.chrisvilches.com/curriculum-vitae) | <h3>curriculum-vitae ([Live Demo](https://ui-ux.chrisvilches.com/curriculum-vitae))</h3>Small CV resume builder app. |
 | [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/custom-scroll.jpg?raw=true" width=250>](https://ui-ux.chrisvilches.com/custom-scroll) | <h3>custom-scroll ([Live Demo](https://ui-ux.chrisvilches.com/custom-scroll))</h3>Custom scrollbar inspired by audio/video editing software (specifically Ableton), as well as VSCode. Content is a grid (tabular data). |
 | [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/hexagon.jpg?raw=true" width=250>](https://ui-ux.chrisvilches.com/hexagon) | <h3>hexagon ([Live Demo](https://ui-ux.chrisvilches.com/hexagon))</h3>Responsive hexagonal grid design. |
 | [<img src="https://github.com/ChrisVilches/UI-UX/blob/main/screenshots/signal.jpg?raw=true" width=250>](https://ui-ux.chrisvilches.com/signal) | <h3>signal ([Live Demo](https://ui-ux.chrisvilches.com/signal))</h3>A React demo app to demonstrate the signals feature. |
