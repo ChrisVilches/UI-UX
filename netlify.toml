@@ -8,3 +8,7 @@
   from = "/curriculum-vitae/*"
   to = "/curriculum-vitae/index.html"
   status = 200
+
+[[redirects]]
+  from = "/"
+  to = "https://www.github.com/ChrisVilches/UI-UX"
