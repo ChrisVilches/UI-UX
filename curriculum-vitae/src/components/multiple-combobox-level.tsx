@@ -137,7 +137,7 @@ export const MultipleComboboxLevel = forwardRef((props: MultipleComboboxLevelPro
         autoComplete="off"
         onChange={(event) => { setQuery(event.target.value) }} />
 
-      <ComboboxOptions anchor="bottom" className="empty:hidden w-[var(--input-width)] z-50">
+      <ComboboxOptions anchor="bottom" className="w-[var(--input-width)] z-50">
         {getFiltered().map((item) => (
           <ComboboxOption key={item.id} value={item} className="data-[focus]:bg-slate-500 p-4 group flex gap-2 bg-slate-900">
             {item.name}
