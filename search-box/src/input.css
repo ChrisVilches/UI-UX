@@ -1,19 +1,19 @@
 .input-open {
   @apply z-40;
-  @apply bg-gray-100;
-  @apply text-gray-700;
+  @apply bg-gray-200;
+  @apply text-gray-950;
   @apply rounded-tl-xl;
   @apply rounded-tr-xl;
 }
 
 .input-close {
   @apply rounded-xl;
-  @apply bg-gray-500;
-  @apply text-gray-100;
+  @apply bg-gray-300;
+  @apply text-gray-950;
 }
 
 .input-base {
-  @apply placeholder-gray-400;
+  @apply placeholder-gray-600;
   @apply relative;
   @apply duration-100;
   @apply p-2;

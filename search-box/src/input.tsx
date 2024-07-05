@@ -105,7 +105,7 @@ export function Input ({ children }: InputProps): JSX.Element {
     <div className="col-span-10 md:col-span-9 lg:col-span-8 flex flex-col" ref={containerRef}>
       <div className="relative">
         {!open && (
-          <div className="flex h-full top-0 left-0 justify-end items-center absolute w-full p-2 bg-opacity-10 z-30 pointer-events-none">
+          <div className="flex h-full top-0 left-0 text-gray-600 justify-end items-center absolute w-full p-2 bg-opacity-10 z-30 pointer-events-none">
             <CgSignal/>
           </div>
         )}
