@@ -8,7 +8,6 @@ export function useResizeObserver (
   useEffect(() => {
     if (!enable || element.current == null) return
 
-    // TODO: The default size 100 is suspicious. I think the default value is never needed.
     const observer = new ResizeObserver(() => {
       if (element.current != null) {
         callback(element.current.getBoundingClientRect())
