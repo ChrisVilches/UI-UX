@@ -62,7 +62,6 @@ export function Input ({ children }: InputProps): JSX.Element {
   useResizeScrollObserve(open, verticalResize)
   useContainerFocus(containerRef, (v: boolean) => {
     if (v && !open) {
-      // TODO: Should format this.
       window.scrollTo({
         top: (containerRef.current as HTMLElement).offsetTop - SCROLL_TOP_OFFSET,
         behavior: 'smooth'
