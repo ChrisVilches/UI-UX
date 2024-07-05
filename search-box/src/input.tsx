@@ -17,6 +17,15 @@ const WAIT_TIME_ENABLE_CLOSE_OBSERVERS_MS = 1000
 const MIN_OPEN_HEIGHT = 100
 const SCROLL_TOP_OFFSET = 20
 
+// NOTE: There's a weird glitch where if the width is 0 (or too small), the container height
+//       Will become too big for a frame, and then resize to the correct size. It seems
+//       This happens when the width is too small, but gets fixed if the width is set
+//       to a larger value. It seems the cause of this glitch is because of the combination
+//       of using both `useResizeObserver` for height and width.
+//       It's worth testing on several browsers.
+//       Reproduce this issue by changing the value to 0.
+const DEFAULT_WIDTH_HACK = 10000
+
 interface InputProps {
   children: ReactNode | ReactNode[]
 }
@@ -27,9 +36,15 @@ export function Input ({ children }: InputProps): JSX.Element {
   const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
 
   const [open, setOpen] = useState(false)
-  const [width, setWidth] = useState(0)
+  const [width, setWidth] = useState(DEFAULT_WIDTH_HACK)
   const [height, setHeight] = useState(0)
   const [openTimestamp, setOpenTimestamp] = useState(0)
+
+  const close = (): void => {
+    setHeight(0)
+    setWidth(DEFAULT_WIDTH_HACK)
+    setOpen(false)
+  }
 
   const skipClose = useCallback(() => {
     const curr = new Date()
@@ -45,20 +60,14 @@ export function Input ({ children }: InputProps): JSX.Element {
     const resultHeight = Math.min(height, (contentRef.current as Element).scrollHeight)
 
     if (!skipClose() && resultHeight < MIN_OPEN_HEIGHT) {
-      setOpen(false)
+      close()
     } else {
       setHeight(resultHeight)
     }
   }, [skipClose])
 
-  // TODO: I think there are some size glitches when I scroll the page, then open the
-  //       input. It seems it takes one frame to resize. This only started happening
-  //       when I added the Lorem to make the page scrollable.
-  //       2024/07/05 Still have this problem. The height is larger for a frame, then
-  //       adjusts and becomes the correct height.
-
-  useResizeObserver(open, inputRef, ({ width }) => { setWidth(width) })
   useResizeObserver(open, contentRef, verticalResize)
+  useResizeObserver(open, inputRef, ({ width }) => { setWidth(width) })
   useResizeScrollObserve(open, verticalResize)
   useContainerFocus(containerRef, (v: boolean) => {
     if (v && !open) {
@@ -70,9 +79,13 @@ export function Input ({ children }: InputProps): JSX.Element {
       setOpenTimestamp((new Date()).getTime())
     }
 
-    setOpen(v)
+    if (v) {
+      setOpen(true)
+    } else if (open) {
+      close()
+    }
   })
-  useEscape(open, () => { setOpen(false) })
+  useEscape(open, close)
 
   useEffect(() => {
     if (!open) return
@@ -80,7 +93,7 @@ export function Input ({ children }: InputProps): JSX.Element {
     const callback: IntersectionObserverCallback = ([e]) => {
       if (skipClose()) return
 
-      if (!e.isIntersecting) setOpen(false)
+      if (!e.isIntersecting) close()
     }
 
     const observer = new IntersectionObserver(callback, { threshold: 0.0 })
