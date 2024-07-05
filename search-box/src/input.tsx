@@ -68,12 +68,13 @@ export function Input({ children }: InputProps): JSX.Element {
     if (v && !open) {
       // TODO: Should format this.
       // TODO: This offset - 20 shouldn't be hardcoded.
-      scrollTo(containerRef.current!.offsetTop -20, () => {
-        setOpen(v)
+      window.scrollTo({
+        top: containerRef.current!.offsetTop - 20,
+        behavior: 'smooth'
       })
-    } else {
-      setOpen(false)
     }
+
+    setOpen(v)
   })
   useEscape(open, () => { setOpen(false) })
 
