@@ -51,8 +51,6 @@ export function Input({ children }: InputProps): JSX.Element {
   }, [openTimestamp])
 
   const verticalResize = useCallback(() => {
-    if (skipClose()) return
-
     const rect = inputRef.current!.getBoundingClientRect()
     
     // TODO: Handle case where the difference is negative (input is below or above viewport)
@@ -66,7 +64,7 @@ export function Input({ children }: InputProps): JSX.Element {
     // This shouldn't be opinionated, since some <Content> elements could be smaller than what I'm considering
     //  (but this is just a hardcoded demo so just move this value to a constant and call it done for now,
     //   no need to overly parameterize stuff)
-    if (resultHeight < 100) {
+    if (!skipClose() && resultHeight < 100) {
       setOpen(false)
     } else {
       setHeight(resultHeight)
