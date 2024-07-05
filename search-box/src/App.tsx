@@ -2,7 +2,7 @@ import './App.css'
 import { Content, DummyBlock } from './dummy'
 import { Input } from './input'
 
-function App() {
+function App (): JSX.Element {
   return (
     <>
       <div className="mb-10"><DummyBlock/></div>

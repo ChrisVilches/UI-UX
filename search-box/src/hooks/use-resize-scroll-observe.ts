@@ -1,6 +1,6 @@
-import { useEffect } from "react"
+import { useEffect } from 'react'
 
-export function useResizeScrollObserve (enable: boolean, cb: () => void) {
+export function useResizeScrollObserve (enable: boolean, cb: () => void): void {
   useEffect(() => {
     if (!enable) return
 

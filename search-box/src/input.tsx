@@ -1,5 +1,5 @@
 
-import { MutableRefObject, useRef, useState, ReactNode, useCallback, useEffect } from 'react'
+import { type MutableRefObject, useRef, useState, type ReactNode, useCallback, useEffect } from 'react'
 import { useEscape } from './use-escape'
 import { useContainerFocus } from './hooks/use-container-focus'
 import { useResizeScrollObserve } from './hooks/use-resize-scroll-observe'
@@ -21,7 +21,7 @@ interface InputProps {
   children: ReactNode | ReactNode[]
 }
 
-export function Input({ children }: InputProps): JSX.Element {
+export function Input ({ children }: InputProps): JSX.Element {
   const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null)
   const containerRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
   const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
@@ -33,18 +33,17 @@ export function Input({ children }: InputProps): JSX.Element {
 
   const skipClose = useCallback(() => {
     const curr = new Date()
-    const skip = curr.getTime() - openTimestamp < WAIT_TIME_ENABLE_CLOSE_OBSERVERS_MS
-    return skip
+    return curr.getTime() - openTimestamp < WAIT_TIME_ENABLE_CLOSE_OBSERVERS_MS
   }, [openTimestamp])
 
   const verticalResize = useCallback(() => {
-    const rect = inputRef.current!.getBoundingClientRect()
-    
+    const rect = (inputRef.current as Element).getBoundingClientRect()
+
     const windowRatioMax = 0.8
     const maxBottom = window.innerHeight * windowRatioMax
     const height = maxBottom - rect.top
-    const resultHeight = Math.min(height, contentRef.current!.scrollHeight)    
-    
+    const resultHeight = Math.min(height, (contentRef.current as Element).scrollHeight)
+
     if (!skipClose() && resultHeight < MIN_OPEN_HEIGHT) {
       setOpen(false)
     } else {
@@ -65,7 +64,7 @@ export function Input({ children }: InputProps): JSX.Element {
     if (v && !open) {
       // TODO: Should format this.
       window.scrollTo({
-        top: containerRef.current!.offsetTop - SCROLL_TOP_OFFSET,
+        top: (containerRef.current as HTMLElement).offsetTop - SCROLL_TOP_OFFSET,
         behavior: 'smooth'
       })
 
@@ -81,12 +80,12 @@ export function Input({ children }: InputProps): JSX.Element {
 
     const callback: IntersectionObserverCallback = ([e]) => {
       if (skipClose()) return
-      
+
       if (!e.isIntersecting) setOpen(false)
     }
-    
-    const observer = new IntersectionObserver(callback, { threshold: 0.0 });
-    observer.observe(inputRef.current!)
+
+    const observer = new IntersectionObserver(callback, { threshold: 0.0 })
+    observer.observe(inputRef.current as Element)
     return () => { observer.disconnect() }
   }, [open, openTimestamp, skipClose])
 

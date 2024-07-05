@@ -1,10 +1,10 @@
-import { MutableRefObject, useEffect } from "react"
+import { type MutableRefObject, useEffect } from 'react'
 
 export function useResizeObserver (
   enable: boolean,
   element: MutableRefObject<HTMLDivElement | null>,
   callback: (rect: DOMRect) => void
-) {
+): void {
   useEffect(() => {
     if (!enable || element.current == null) return
 
