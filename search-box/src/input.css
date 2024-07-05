@@ -1,0 +1,28 @@
+.input-open {
+  @apply z-40;
+  @apply bg-gray-100;
+  @apply text-gray-700;
+  @apply rounded-tl-xl;
+  @apply rounded-tr-xl;
+}
+
+.input-close {
+  @apply rounded-xl;
+  @apply bg-gray-500;
+  @apply text-gray-100;
+}
+
+.input-base {
+  @apply placeholder-gray-400;
+  @apply relative;
+  @apply duration-100;
+  @apply p-2;
+  @apply w-full;
+  @apply text-sm/6;
+  @apply font-semibold;
+  @apply focus:outline-none;
+  @apply data-[active]:text-white;
+  @apply data-[hover]:text-white;
+  @apply data-[focus]:outline-1;
+  @apply data-[focus]:outline-white;
+}
