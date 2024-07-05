@@ -5,8 +5,15 @@ import { useContainerFocus } from './hooks/use-container-focus'
 import { useResizeScrollObserve } from './hooks/use-resize-scroll-observe'
 import { useResizeObserver } from './hooks/use-resize-observer'
 import { CgSignal } from 'react-icons/cg'
-import { scrollTo } from './custom-scroll-to'
 import './input.css'
+
+// NOTE: This is necessary because on mobile, when focusing on the input, it will sometimes open
+//       the keyboard, which decreases the viewport height. This will trigger some events that
+//       close the input, making it very glitchy.
+//       For this reason, I scroll so that the input is at the top, and wait for the scroll to complete.
+//       That way, we can start executing input closing events after the input position has been set
+//       at the top.
+const WAIT_TIME_ENABLE_CLOSE_OBSERVERS_MS = 1000
 
 // TODO: Just make it modern and it's done.
 // TODO: Add a toggle to add some dummy elements. That way we can check against a non-trivial layout.
@@ -35,8 +42,17 @@ export function Input({ children }: InputProps): JSX.Element {
   const [open, setOpen] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)
   const [height, setHeight] = useState(DEFAULT_HEIGHT)
+  const [openTimestamp, setOpenTimestamp] = useState(0)
+
+  const skipClose = useCallback(() => {
+    const curr = new Date()
+    const skip = curr.getTime() - openTimestamp < WAIT_TIME_ENABLE_CLOSE_OBSERVERS_MS
+    return skip
+  }, [openTimestamp])
 
   const verticalResize = useCallback(() => {
+    if (skipClose()) return
+
     const rect = inputRef.current!.getBoundingClientRect()
     
     // TODO: Handle case where the difference is negative (input is below or above viewport)
@@ -55,7 +71,7 @@ export function Input({ children }: InputProps): JSX.Element {
     } else {
       setHeight(resultHeight)
     }
-  }, [])
+  }, [skipClose])
 
   // TODO: I think there are some size glitches when I scroll the page, then open the
   //       input. It seems it takes one frame to resize. This only started happening
@@ -72,6 +88,8 @@ export function Input({ children }: InputProps): JSX.Element {
         top: containerRef.current!.offsetTop - 20,
         behavior: 'smooth'
       })
+
+      setOpenTimestamp((new Date()).getTime())
     }
 
     setOpen(v)
@@ -85,6 +103,8 @@ export function Input({ children }: InputProps): JSX.Element {
     const options = { threshold: 0.0 }
 
     const callback: IntersectionObserverCallback = ([e]) => {
+      if (skipClose()) return
+      
       if (!e.isIntersecting) setOpen(false)
     }
     
@@ -93,7 +113,7 @@ export function Input({ children }: InputProps): JSX.Element {
     return () => {
       observer.disconnect()
     }
-  }, [open])
+  }, [open, openTimestamp, skipClose])
 
   // TODO: The overlay can't hide the background too much, since the buttons CAN be clicked (it executes their onClick function, it's not
   //       like a headless UI dialog)
