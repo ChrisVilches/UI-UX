@@ -5,6 +5,7 @@ import { useContainerFocus } from './hooks/use-container-focus'
 import { useResizeScrollObserve } from './hooks/use-resize-scroll-observe'
 import { useResizeObserver } from './hooks/use-resize-observer'
 import { CgSignal } from 'react-icons/cg'
+import { scrollTo } from './custom-scroll-to'
 import './input.css'
 
 // TODO: Just make it modern and it's done.
@@ -42,8 +43,18 @@ export function Input({ children }: InputProps): JSX.Element {
 
     const windowRatioMax = 0.8
     const maxBottom = window.innerHeight * windowRatioMax
-    const height = maxBottom - rect.top    
-    setHeight(Math.min(height, contentRef.current!.scrollHeight))
+    const height = maxBottom - rect.top
+    const resultHeight = Math.min(height, contentRef.current!.scrollHeight)    
+    
+    // TODO: This value shouldn't be hardcoded.
+    // This shouldn't be opinionated, since some <Content> elements could be smaller than what I'm considering
+    //  (but this is just a hardcoded demo so just move this value to a constant and call it done for now,
+    //   no need to overly parameterize stuff)
+    if (resultHeight < 100) {
+      setOpen(false)
+    } else {
+      setHeight(resultHeight)
+    }
   }, [])
 
   // TODO: I think there are some size glitches when I scroll the page, then open the
@@ -55,10 +66,14 @@ export function Input({ children }: InputProps): JSX.Element {
   useResizeScrollObserve(open, verticalResize)
   useContainerFocus(containerRef, (v: boolean) => {
     if (v && !open) {
-      window.scrollTo({ top: containerRef.current!.offsetTop, behavior: 'smooth'})
+      // TODO: Should format this.
+      // TODO: This offset - 20 shouldn't be hardcoded.
+      scrollTo(containerRef.current!.offsetTop -20, () => {
+        setOpen(v)
+      })
+    } else {
+      setOpen(false)
     }
-
-    setOpen(v)
   })
   useEscape(open, () => { setOpen(false) })
 
