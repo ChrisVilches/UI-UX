@@ -53,7 +53,13 @@ export function Input({ children }: InputProps): JSX.Element {
   useResizeObserver(open, inputRef, ({ width }) => { setWidth(width) })
   useResizeObserver(open, contentRef, verticalResize)
   useResizeScrollObserve(open, verticalResize)
-  useContainerFocus(containerRef, setOpen)
+  useContainerFocus(containerRef, (v: boolean) => {
+    if (v && !open) {
+      window.scrollTo({ top: containerRef.current!.offsetTop, behavior: 'smooth'})
+    }
+
+    setOpen(v)
+  })
   useEscape(open, () => { setOpen(false) })
 
   // TODO: Should I leave this?

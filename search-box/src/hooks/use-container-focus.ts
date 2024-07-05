@@ -11,11 +11,7 @@ export function useContainerFocus (
 ) {
   useLayoutEffect(() => {
     const handleEvent = (e: FocusEvent | MouseEvent) => {
-      const inside = e.target instanceof HTMLElement && nodeInsideContainer(e.target, container.current!)
-      if (inside) {
-        window.scrollTo({ top: container.current!.offsetTop, behavior: 'smooth'})
-      }
-      handle(inside)
+      handle(e.target instanceof HTMLElement && nodeInsideContainer(e.target, container.current!))
     }
 
     document.addEventListener('focusin', handleEvent)
